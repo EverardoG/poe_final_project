@@ -1,0 +1,15 @@
+[submodule "Adafruit_9DOF"]
+	path = Adafruit_9DOF
+	url = https://github.com/adafruit/Adafruit_9DOF
+[submodule "dependencies/Adafruit_9DOF"]
+	path = dependencies/Adafruit_9DOF
+	url = https://github.com/adafruit/Adafruit_9DOF
+[submodule "dependencies/Adafruit_L3GD20_U"]
+	path = dependencies/Adafruit_L3GD20_U
+	url = https://github.com/adafruit/Adafruit_L3GD20_U
+[submodule "dependencies/Adafruit_LSM303DLHC"]
+	path = dependencies/Adafruit_LSM303DLHC
+	url = https://github.com/adafruit/Adafruit_LSM303DLHC
+[submodule "dependencies/Adafruit_Sensor"]
+	path = dependencies/Adafruit_Sensor
+	url = https://github.com/adafruit/Adafruit_Sensor
