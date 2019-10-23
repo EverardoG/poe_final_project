@@ -12,37 +12,20 @@ Adafruit_LSM303_Mag_Unified   mag   = Adafruit_LSM303_Mag_Unified(30302);
 /* Update this with the correct SLP for accurate altitude measurements */
 float seaLevelPressure = SENSORS_PRESSURE_SEALEVELHPA;
 
-/**************************************************************************/
-/*!
-    @brief  Initialises all the sensors used by this example
-*/
-/**************************************************************************/
-void initSensors()
-{
-  if(!accel.begin())
-  {
-    /* There was a problem detecting the LSM303 ... check your connections */
-    Serial.println(F("Ooops, no LSM303 detected ... Check your wiring!"));
-    while(1);
-  }
-  if(!mag.begin())
-  {
-    /* There was a problem detecting the LSM303 ... check your connections */
-    Serial.println("Ooops, no LSM303 detected ... Check your wiring!");
-    while(1);
-  }
-}
+// button variables
+int buttonPin = 2;
+int buttonPressed = 0;
 
-/**************************************************************************/
-/*!
+// orientation for servos
+int maxPitchSensor = 180;
+int minPitchSensor = 90;
 
-*/
-/**************************************************************************/
+
 void setup(void)
 {
   Serial.begin(115200);
-  Serial.println(F("Adafruit 9 DOF Pitch/Roll/Heading Example")); Serial.println("");
-  
+//  Serial.println(F("Adafruit 9 DOF Pitch/Roll/Heading /Example")); Serial.println("");
+  pinMode(buttonPin, INPUT);
   /* Initialise the sensors */
   initSensors();
 }
@@ -54,6 +37,8 @@ void setup(void)
 /**************************************************************************/
 void loop(void)
 {
+  // SENSE
+  // get orientation data
   sensors_event_t accel_event;
   sensors_event_t mag_event;
   sensors_vec_t   orientation;
@@ -62,26 +47,53 @@ void loop(void)
   accel.getEvent(&accel_event);
   if (!dof.accelGetOrientation(&accel_event, &orientation))
   {
-    Serial.println("FUCK IT BROKE");
-    /* 'orientation' should have valid .roll and .pitch fields */
-//    Serial.print(F("Roll: "));
-//    Serial.print(orientation.roll);
-//    Serial.print(F("; "));
-//    Serial.print(F("Pitch: "));
-//    Serial.print(orientation.pitch);
-//    Serial.print(F("; "));
+    Serial.println("Calculating orientation failed");
   }
-  
+
   /* Calculate the heading using the magnetometer */
   mag.getEvent(&mag_event);
   if (dof.magGetOrientation(SENSOR_AXIS_Z, &mag_event, &orientation))
   {
     /* 'orientation' should have valid .heading data now */
+    Serial.print(F("Roll: "));
+    Serial.print(orientation.roll);
+    Serial.print(F("; "));
+    Serial.print(F("Pitch: "));
+    Serial.print(orientation.pitch);
+    Serial.print(F("; "));
     Serial.print(F("Heading: "));
     Serial.print(orientation.heading);
-    Serial.print(F("; "));
+    Serial.println(F("; "));
   }
 
-  Serial.println(F(""));
-//  delay(1000);
+  buttonPressed = digitalRead(buttonPin);
+  Serial.println(buttonPressed);
+
+  // THINK
+  int x = 100;
+  int y = map(x, 180,90,90,180);
+  Serial.println(y);
+  
+
+  // ACT
+
+  
+}
+
+// HELPFUL FUNCTION
+
+void initSensors()
+{
+  if (!accel.begin())
+  {
+    /* There was a problem detecting the LSM303 ... check your connections */
+    Serial.println(F("Ooops, no LSM303 detected ... Check your wiring!"));
+    while (1);
+  }
+  if (!mag.begin())
+  {
+    /* There was a problem detecting the LSM303 ... check your connections */
+    Serial.println("Ooops, no LSM303 detected ... Check your wiring!");
+    while (1);
+  }
 }
