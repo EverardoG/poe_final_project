@@ -14,6 +14,7 @@ Servo rollservo;  // create servo object to control a servo
 int rollpos = 0;    // variable to store the servo position
 int pinchpos = 45; //starts pinch in open position
 int pitchpos = 90; //starts pitch in neutral position
+int yawpos = 90; //starts yaw in neutral position
 
 /* Assign a unique ID to the sensors */
 Adafruit_9DOF                dof   = Adafruit_9DOF();
@@ -87,7 +88,9 @@ void loop(void)
   // THINK
   int x = 100;
   int y = map(x, 180, 90, 90, 180);
+  
   //Serial.println(y);
+  // PITCH THINKING
   int handpitch = orientation.pitch; //making float into an int
   //Serial.println(handpitch);
   if (handpitch > -150 && handpitch < 0) {
@@ -102,23 +105,50 @@ void loop(void)
     //Serial.println("between 0 and 90");
     handpitch = 90;
   }
-
   int clawpitch;
   if (-180 <= handpitch && handpitch <= -150) {
-    Serial.println("-180--150");
+    //Serial.println("-180--150");
     clawpitch = map(handpitch, -150, -180, 60, 90);
   }
   else if (90 <= handpitch && handpitch <= 180) {
-    Serial.println("90-180");
+    //Serial.println("90-180");
     clawpitch = map(handpitch, 180, 90, 90, 180);
   }
-  pitchpos=clawpitch;
-  Serial.println(clawpitch);
+  pitchpos = clawpitch;
+  //Serial.println(clawpitch);
+  // ROLL THINKING
+  int handroll = orientation.roll; //making float into an int
+  //Serial.println(handroll);
+  if (handroll > 90) {
+    //Serial.println("less than 150");
+    handroll = 90;}
+  else if (handroll < -90) {
+    //Serial.println("less than 150");
+    handroll = -90;}
+  int clawroll;
+    //Serial.println("-180--150");
+    clawroll = map(handroll, 90, -90, 0, 180);
+  rollpos = clawroll;
+  // YAW THINKING
+  int handyaw = orientation.heading; //making float into an int
+  Serial.println(handyaw);
+  if (handyaw > 230) {
+    //Serial.println("less than 150");
+    handyaw = 230;}
+  else if (handyaw <50) {
+    //Serial.println("less than 150");
+    handyaw = 50;}
+  int clawyaw;
+    //Serial.println("-180--150");
+    clawyaw = map(handyaw, 230, 50, 45, 135);
+  yawpos = clawyaw;
+  yawpos=90;
   // ACT
   closeclaw(buttonPressed);
   pitchservo.write(pitchpos);
+  rollservo.write(rollpos);
+  yawservo.write(yawpos);
 }
-
 // HELPFUL FUNCTION
 
 void initSensors()
