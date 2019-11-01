@@ -13,3 +13,6 @@
 [submodule "dependencies/Adafruit_Sensor"]
 	path = dependencies/Adafruit_Sensor
 	url = https://github.com/adafruit/Adafruit_Sensor
+[submodule "dependencies/Filters"]
+	path = dependencies/Filters
+	url = git@github.com:JonHub/Filters.git
