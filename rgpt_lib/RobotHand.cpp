@@ -7,8 +7,14 @@ RobotHand::RobotHand()
 
 void RobotHand::init(int pitch_pin, int yaw_pin, int roll_pin, int pinch_pin)
 {
+    pitchPin = pitch_pin;
+    yawPin = yaw_pin;
+    rollPin = roll_pin;
+    pinchPin = pinch_pin;
+
+
     pitchservo.attach(pitch_pin);
-    yawservo.attach(yaw_pin);
+    // yawservo.attach(yaw_pin);
     rollservo.attach(roll_pin);
     pinchservo.attach(pinch_pin);
 
@@ -16,6 +22,9 @@ void RobotHand::init(int pitch_pin, int yaw_pin, int roll_pin, int pinch_pin)
 
 void RobotHand::setOrientation(int pitch_angle, int yaw_angle, int roll_angle)
 {
+    // prev_pitchAngle = pitchAngle;
+    // prev_rollAngle = rollAngle;
+
     pitchAngle = pitch_angle;
     yawAngle = yaw_angle;
     rollAngle = roll_angle;
@@ -33,10 +42,47 @@ void RobotHand::setClaw(int button_press)
 
 void RobotHand::updateActuators()
 {
-    pitchservo.write(pitchAngle);
-    yawservo.write(yawAngle);
-    rollservo.write(rollAngle);
-    pinchservo.write(pinchAngle);
+    // long startTime = millis();
+    writeToServo(pitchservo, pitchPin, pitchAngle);
+    writeToServo(rollservo, rollPin, rollAngle);
+    // pitchservo.write(pitchAngle);
+    // rollservo.write(rollAngle);
+    // pitchservo.write(pitchAngle);
+    // long endTime = millis();
+    // long delTime = endTime - startTime;
+    // Serial.println(delTime);
+    // writeToServo(rollservo, rollPin, rollAngle);
+    // writeToServo(pinchservo, pinchPin, pinchAngle);
+
+    // if (pitchAngle != pitchservo.read()) {
+    //     // prev_pitchAngle = pitchAngle;
+    //     if (!pitchservo.attached()) {
+    //         pitchservo.attach(pitchPin);
+    //     }
+    //     pitchservo.write(pitchAngle);
+    //     // Serial.print("pitch angle "); Serial.println(pitchAngle);
+    // }
+    // else if (pitchservo.attached()) {
+    //     pitchservo.detach();
+    // }
+    // // Serial.println(rollAngle);
+    // if (rollAngle != rollservo.read()) {
+    //     if (!rollservo.attached()) {
+    //         // Serial.println(millis());
+    //         rollservo.attach(rollPin);
+    //         // Serial.println(millis());
+    //     }
+    //     // prev_rollAngle = rollAngle;
+    //     rollservo.write(rollAngle);
+    //     Serial.println(rollAngle);
+    //     // Serial.print("roll angle: "); Serial.println(rollAngle);
+    // }
+    // else if (rollservo.attached()) {
+    //     rollservo.detach();
+    // }
+    // // rollservo.write(rollAngle);
+    // // Serial.println(rollAngle);
+    // pinchservo.write(pinchAngle);
 }
 
 float RobotHand::remap(float old_val, float old_min, float old_max, float new_min, float new_max)
@@ -46,58 +92,59 @@ float RobotHand::remap(float old_val, float old_min, float old_max, float new_mi
 
 float RobotHand::remapAngle(float old_angle, float old_min, float old_max, float new_min, float new_max)
 {
-    Serial.print("old angle: "); Serial.println(old_angle);
-    float offset_old;
-    if ((old_max - old_min) > 0 ) {
-        offset_old = old_min;
+    // adding an offset if the min is actually greater than the max
+    // this handles the case where we cross over the 0,360 point
+    if (old_min > old_max) {
+        if (old_angle <= old_max + 0.5*(360 - (old_min - old_max)) && old_angle > 0) {
+            old_angle += 360;
+        }
+        old_max += 360;
+    }
+
+    // this rams the old angle up or down if it's out of bounds
+    if (old_min < old_max) {
+        if (old_angle > old_max) {
+            old_angle = old_max;
+        }
+        else if (old_angle < old_min) {
+            old_angle = old_min;
+        }
     }
     else {
-        offset_old = 360 - old_min;
-    }
-    Serial.print("offset old: "); Serial.println(offset_old);
-
-    float offset_old_max = old_max + offset_old;
-    if (offset_old_max < 0) offset_old_max += 360;
-
-    float offset_old_angle = old_angle + offset_old;
-    if (offset_old_angle > 360) offset_old_angle -= 360;
-
-    Serial.print("offset_old_angle (og):"); Serial.println(offset_old_angle);
-
-    // float offset_midpoint = 360.0 - offset_old_max;
-    // if (offset_old_angle > offset_old_max && offset_old_angle < offset_midpoint) {
-    //     offset_old_angle = offset_old_max;
-    // }
-    // else if (offset_old_angle > offset_midpoint && offset_old_angle < 360.0) {
-    //     offset_old_angle = 0;
-    // }
-
-    float offset_new;
-    if ((new_max - new_min) > 0 ) {
-        offset_new = new_min;
-    }
-    else {
-        offset_new = - (360 - new_min);
+        if (old_angle < old_max) {
+            old_angle = old_max;
+        }
+        else if (old_angle > old_min) {
+            old_angle = old_min;
+        }
     }
 
-    float offset_new_max = new_max - offset_new;
-    Serial.print("offset old angle: "); Serial.println(offset_old_angle);
-    Serial.print("offset new max: "); Serial.println(offset_new_max);
-    Serial.print("offset old max: "); Serial.println(offset_old_max);
-    float offset_new_angle = remap(offset_old_angle, 0.0, offset_old_max, 0.0, offset_new_max);
-    Serial.print("offset new angle: "); Serial.println(offset_new_angle);
-
-    Serial.print("offset new: "); Serial.println(offset_new);
-    float new_angle = offset_new_angle - offset_new;
-
-    Serial.print("new angle: "); Serial.println(new_angle);
-    if (new_angle < 0) {
-        new_angle = new_angle + 360;
+    // this adds an offset to the new values if they cross
+    // the 0,360 point
+    if (new_min > new_max) {
+        new_max += 360;
+        new_min += 360;
     }
 
-    // Serial.print("new angle: "); Serial.println(new_angle);
+    // do the actual remapping
+    int new_angle = remap(old_angle, old_min, old_max, new_min, new_max);
 
-    // Serial.println("++++++++++");
+    // take off any 360 offset by wrapping around 360
+    new_angle %= 360;
 
     return new_angle;
+}
+
+void RobotHand::writeToServo(Servo servo, int servoPin,int newAngle) {
+    // Serial.print(newAngle); Serial.print(" "); Serial.println(servo.read());
+    if (newAngle != servo.read()) {
+        // if (!servo.attached()) {
+        //     servo.attach(servoPin);
+        // }
+        servo.write(newAngle);
+        // Serial.println(newAngle);
+    }
+    // else if (servo.attached()) {
+    //     servo.detach();
+    // }
 }

@@ -12,6 +12,9 @@
 #include <Adafruit_L3GD20_U.h>
 #include <Adafruit_9DOF.h>
 
+// necessary for filtering
+#include "Filters.h"
+
 class HumanHand
 {
   public:
@@ -33,6 +36,11 @@ class HumanHand
     Adafruit_9DOF dof;
     Adafruit_LSM303_Accel_Unified accel;
     Adafruit_LSM303_Mag_Unified mag;
+
+    FilterOnePole roll_lowpassFilter;
+    FilterOnePole pitch_lowpassFilter;
+    float roll_filter_frequency = 0.5;
+    float pitch_filter_frequency = 100000.0;
 };
 
 #endif

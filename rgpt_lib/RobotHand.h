@@ -18,11 +18,17 @@ class RobotHand
 
   private:
     float remap(float old_val, float old_min, float old_max, float new_min, float new_max);
+    void writeToServo(Servo servo, int servoPin,int newAngle);
 
     int pitchAngle;
     int yawAngle;
     int rollAngle;
     int pinchAngle;
+
+    int rollPin;
+    int pitchPin;
+    int yawPin;
+    int pinchPin;
 
     Servo pitchservo;
     Servo yawservo;

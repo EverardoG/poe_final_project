@@ -33,6 +33,10 @@ void HumanHand::init(int button_pin)
     buttonPin = button_pin;
     pinMode(buttonPin, INPUT);
 
+    // set up Filter
+    FilterOnePole roll_lowpassFilter( LOWPASS, roll_filter_frequency);
+    FilterOnePole pitch_lowpassFilter( LOWPASS, pitch_filter_frequency);
+
 
 }
 
@@ -76,10 +80,19 @@ void HumanHand::updateSensors()
     }
 
     // offsetting orientation to make values go from 0 to 360 instead of -180 to 180
-    orientation.pitch = orientation.pitch + 180.0;
-    orientation.roll = orientation.roll + 180.0;
+
+    orientation.pitch += 180.0;
+    if (orientation.pitch < 180.0) {
+        orientation.pitch += 360.0;
+    }
+
+    orientation.roll += 180.0;
+
+    orientation.pitch = (int) pitch_lowpassFilter.input(orientation.pitch);
+    // Serial.print("Roll: "); Serial.print(orientation.roll);
+    orientation.roll = (int) roll_lowpassFilter.input(orientation.roll);
+    // Serial.print(","); Serial.println(orientation.roll);
     orientation.heading = orientation.heading + 180.0;
 
     handOrientation = orientation;
-
 }
