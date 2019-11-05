@@ -88,7 +88,7 @@ void loop(void)
   // THINK
   int x = 100;
   int y = map(x, 180, 90, 90, 180);
-  
+
   //Serial.println(y);
   // PITCH THINKING
   int handpitch = orientation.pitch; //making float into an int
@@ -131,7 +131,7 @@ void loop(void)
   rollpos = clawroll;
   // YAW THINKING
   int handyaw = orientation.heading; //making float into an int
-  Serial.println(handyaw);
+  // Serial.println(handyaw);
   if (handyaw > 230) {
     //Serial.println("less than 150");
     handyaw = 230;}
@@ -148,6 +148,8 @@ void loop(void)
   pitchservo.write(pitchpos);
   rollservo.write(rollpos);
   yawservo.write(yawpos);
+
+  Serial.print("Roll: "); Serial.print(handroll); Serial.print(" Pitch: "); Serial.println(handpitch);
 }
 // HELPFUL FUNCTION
 

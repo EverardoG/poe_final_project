@@ -21,6 +21,7 @@ void setup(void)
 
 void loop(void)
 {
+  long startTime = millis();
   // SENSE
   humanhand.updateSensors();
   buttonPressed = humanhand.getFingerStatus();
@@ -37,4 +38,9 @@ void loop(void)
 
   // ACT
   robothand.updateActuators();
+
+  long endTime = millis();
+  long delTime = endTime - startTime;
+
+  // Serial.println(delTime);
 }

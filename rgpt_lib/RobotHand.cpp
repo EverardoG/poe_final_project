@@ -42,47 +42,10 @@ void RobotHand::setClaw(int button_press)
 
 void RobotHand::updateActuators()
 {
-    // long startTime = millis();
+    // Serial.println(pinchAngle);
     writeToServo(pitchservo, pitchPin, pitchAngle);
     writeToServo(rollservo, rollPin, rollAngle);
-    // pitchservo.write(pitchAngle);
-    // rollservo.write(rollAngle);
-    // pitchservo.write(pitchAngle);
-    // long endTime = millis();
-    // long delTime = endTime - startTime;
-    // Serial.println(delTime);
-    // writeToServo(rollservo, rollPin, rollAngle);
-    // writeToServo(pinchservo, pinchPin, pinchAngle);
-
-    // if (pitchAngle != pitchservo.read()) {
-    //     // prev_pitchAngle = pitchAngle;
-    //     if (!pitchservo.attached()) {
-    //         pitchservo.attach(pitchPin);
-    //     }
-    //     pitchservo.write(pitchAngle);
-    //     // Serial.print("pitch angle "); Serial.println(pitchAngle);
-    // }
-    // else if (pitchservo.attached()) {
-    //     pitchservo.detach();
-    // }
-    // // Serial.println(rollAngle);
-    // if (rollAngle != rollservo.read()) {
-    //     if (!rollservo.attached()) {
-    //         // Serial.println(millis());
-    //         rollservo.attach(rollPin);
-    //         // Serial.println(millis());
-    //     }
-    //     // prev_rollAngle = rollAngle;
-    //     rollservo.write(rollAngle);
-    //     Serial.println(rollAngle);
-    //     // Serial.print("roll angle: "); Serial.println(rollAngle);
-    // }
-    // else if (rollservo.attached()) {
-    //     rollservo.detach();
-    // }
-    // // rollservo.write(rollAngle);
-    // // Serial.println(rollAngle);
-    // pinchservo.write(pinchAngle);
+    writeToServo(pinchservo, pinchPin, pinchAngle);
 }
 
 float RobotHand::remap(float old_val, float old_min, float old_max, float new_min, float new_max)
@@ -138,13 +101,14 @@ float RobotHand::remapAngle(float old_angle, float old_min, float old_max, float
 void RobotHand::writeToServo(Servo servo, int servoPin,int newAngle) {
     // Serial.print(newAngle); Serial.print(" "); Serial.println(servo.read());
     if (newAngle != servo.read()) {
-        // if (!servo.attached()) {
-        //     servo.attach(servoPin);
-        // }
+         if (!servo.attached()) {
+             servo.attach(servoPin);
+         }
         servo.write(newAngle);
+        Serial.println(newAngle);
         // Serial.println(newAngle);
     }
-    // else if (servo.attached()) {
-    //     servo.detach();
-    // }
+     else if (servo.attached()) {
+         servo.detach();
+     }
 }
