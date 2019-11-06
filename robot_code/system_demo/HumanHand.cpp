@@ -34,8 +34,10 @@ void HumanHand::init(int button_pin)
     pinMode(buttonPin, INPUT);
 
     // set up Filter
-    FilterOnePole roll_lowpassFilter( LOWPASS, roll_filter_frequency);
-    FilterOnePole pitch_lowpassFilter( LOWPASS, pitch_filter_frequency);
+    FilterOnePole rollXLowpassFilter( LOWPASS, roll_filter_frequency);
+    FilterOnePole rollYLowpassFilter( LOWPASS, roll_filter_frequency);
+    FilterOnePole pitchXLowpassFilter( LOWPASS, pitch_filter_frequency);
+    FilterOnePole pitchYLowpassFilter( LOWPASS, pitch_filter_frequency);
 
 
 }
@@ -79,20 +81,33 @@ void HumanHand::updateSensors()
         int error;
     }
 
-    // offsetting orientation to make values go from 0 to 360 instead of -180 to 180
+
+    // split each angle into x, y componenets, filter on those, then
+    // recombine the two values into an angle
+    // This is necessary because of the wrapping that occurs at 0,360
 
     orientation.pitch += 180.0;
-    if (orientation.pitch < 180.0) {
-        orientation.pitch += 360.0;
-    }
+    orientation.pitch *= 3.14/180.0;
+    float pitch_x = cos(orientation.pitch);
+    float pitch_y = sin(orientation.pitch);
+
+    float pitch_x_filtered = pitchXLowpassFilter.input(pitch_x);
+    float pitch_y_filtered = pitchYLowpassFilter.input(pitch_y);
+
+    orientation.pitch = atan2(pitch_y_filtered, pitch_x_filtered) * 180.0/3.14;
 
     orientation.roll += 180.0;
+    orientation.roll *= 3.14/180.0;
+    float roll_x = cos(orientation.roll);
+    float roll_y = sin(orientation.roll);
 
-    orientation.pitch = (int) pitch_lowpassFilter.input(orientation.pitch);
-    // Serial.print("Roll: "); Serial.print(orientation.roll);
-    orientation.roll = (int) roll_lowpassFilter.input(orientation.roll);
-    // Serial.print(","); Serial.println(orientation.roll);
-    orientation.heading = orientation.heading + 180.0;
+    float roll_x_filtered = rollXLowpassFilter.input(roll_x);
+    float roll_y_filtered = rollYLowpassFilter.input(roll_y);
+
+    orientation.roll = atan2(roll_y_filtered, roll_x_filtered) * 180.0/3.14;
+    // Serial.println(orientation.roll);
+
+    // Serial.print("Pitch: "); Serial.print(orientation.pitch); Serial.print(" | Roll: "); Serial.println(orientation.roll);
 
     handOrientation = orientation;
 }

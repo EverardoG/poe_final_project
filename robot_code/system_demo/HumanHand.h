@@ -14,6 +14,7 @@
 
 // necessary for filtering
 #include "Filters.h"
+#include <math.h>
 
 class HumanHand
 {
@@ -37,10 +38,18 @@ class HumanHand
     Adafruit_LSM303_Accel_Unified accel;
     Adafruit_LSM303_Mag_Unified mag;
 
-    FilterOnePole roll_lowpassFilter;
-    FilterOnePole pitch_lowpassFilter;
+    FilterOnePole rollXLowpassFilter;
+    FilterOnePole rollYLowpassFilter;
+    FilterOnePole pitchXLowpassFilter;
+    FilterOnePole pitchYLowpassFilter;
+
     float roll_filter_frequency = 0.5;
     float pitch_filter_frequency = 100000.0;
+
+    float lastPitch;
+    float lastRoll;
+
+    boolean firstRun;
 };
 
 #endif

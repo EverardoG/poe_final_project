@@ -5,35 +5,34 @@
 // for standard arudino library and servos
 #include <Arduino.h>
 #include <Servo.h>
+#include <FlexyStepper.h>
 
 class RobotHand
 {
   public:
     RobotHand();
-    void init(int pitch_pin, int yaw_pin, int roll_pin, int pinch_pin);
+    void init(int left_step_pin, int left_direction_pin, int right_step_pin, int right_direction_pin);
     float remapAngle(float old_angle, float old_min, float old_max, float new_min, float new_max);
-    void setOrientation(int pitch_angle, int yaw_angle, int roll_angle);
+    float remap(float old_val, float old_min, float old_max, float new_min, float new_max);
+    void setOrientation(int pitch_angle, int roll_angle);
     void setClaw(int button_press);
     void updateActuators();
 
   private:
-    float remap(float old_val, float old_min, float old_max, float new_min, float new_max);
-    void writeToServo(Servo servo, int servoPin,int newAngle);
-
     int pitchAngle;
-    int yawAngle;
     int rollAngle;
     int pinchAngle;
 
-    int rollPin;
-    int pitchPin;
-    int yawPin;
-    int pinchPin;
+    int leftStepPin;
+    int leftDirectionPin;
+    int rightStepPin;
+    int rightDirectionPin;
 
-    Servo pitchservo;
-    Servo yawservo;
-    Servo rollservo;
-    Servo pinchservo;
+    int leftStepperPos;
+    int rightStepperPos;
+
+    FlexyStepper LeftStepper;
+    FlexyStepper RightStepper;
 
     bool isClosed;
 };

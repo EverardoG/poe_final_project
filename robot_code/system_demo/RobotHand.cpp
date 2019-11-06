@@ -5,29 +5,41 @@ RobotHand::RobotHand()
 {
 }
 
-void RobotHand::init(int pitch_pin, int yaw_pin, int roll_pin, int pinch_pin)
+void RobotHand::init(int left_step_pin, int left_direction_pin, int right_step_pin, int right_direction_pin)
 {
-    pitchPin = pitch_pin;
-    yawPin = yaw_pin;
-    rollPin = roll_pin;
-    pinchPin = pinch_pin;
 
+    int leftStepPin = left_step_pin;
+    int leftDirectionPin = left_direction_pin;
+    int rightStepPin = right_step_pin;
+    int rightDirectionPin = right_direction_pin;
 
-    pitchservo.attach(pitch_pin);
-    // yawservo.attach(yaw_pin);
-    rollservo.attach(roll_pin);
-    pinchservo.attach(pinch_pin);
+    LeftStepper.connectToPins(leftStepPin, leftDirectionPin);
+    RightStepper.connectToPins(rightStepPin, rightDirectionPin);
+
+    LeftStepper.setCurrentPositionInSteps(0);
+    LeftStepper.setSpeedInStepsPerSecond(10000);
+    LeftStepper.setAccelerationInStepsPerSecondPerSecond(10000);
+
+    RightStepper.setCurrentPositionInSteps(0);
+    RightStepper.setSpeedInStepsPerSecond(10000);
+    RightStepper.setAccelerationInStepsPerSecondPerSecond(10000);
 
 }
 
-void RobotHand::setOrientation(int pitch_angle, int yaw_angle, int roll_angle)
+void RobotHand::setOrientation(int pitch_angle, int roll_angle)
 {
-    // prev_pitchAngle = pitchAngle;
-    // prev_rollAngle = rollAngle;
 
     pitchAngle = pitch_angle;
-    yawAngle = yaw_angle;
     rollAngle = roll_angle;
+
+    int leftStepperPos = (- (float) roll_angle / 2.0 - (float) pitch_angle) * 8.89;
+    int rightStepperPos = (- (float) roll_angle / 2.0 + (float) pitch_angle) * 8.89;
+
+    // Serial.print("Left: "); Serial.print(leftStepperPos); Serial.print(" | Right: "); Serial.println(rightStepperPos);
+
+    LeftStepper.setTargetPositionInSteps(leftStepperPos);
+    RightStepper.setTargetPositionInSteps(rightStepperPos);
+
 }
 
 void RobotHand::setClaw(int button_press)
@@ -42,10 +54,19 @@ void RobotHand::setClaw(int button_press)
 
 void RobotHand::updateActuators()
 {
-    // Serial.println(pinchAngle);
-    writeToServo(pitchservo, pitchPin, pitchAngle);
-    writeToServo(rollservo, rollPin, rollAngle);
-    writeToServo(pinchservo, pinchPin, pinchAngle);
+    long startTime = millis();
+    long endInterval = 10;
+
+    // run steppers for the specified endInterval in milliseconds
+    while (!LeftStepper.motionComplete() && !RightStepper.motionComplete() && (millis() - startTime) < endInterval){
+        boolean isTrue = (millis() - startTime) < endInterval;
+        // Serial.print(millis()); Serial.print(" | ");
+        // Serial.print(startTime); Serial.print(" | ");
+        // Serial.println(isTrue);
+        LeftStepper.processMovement();
+        RightStepper.processMovement();
+    }
+
 }
 
 float RobotHand::remap(float old_val, float old_min, float old_max, float new_min, float new_max)
@@ -98,17 +119,17 @@ float RobotHand::remapAngle(float old_angle, float old_min, float old_max, float
     return new_angle;
 }
 
-void RobotHand::writeToServo(Servo servo, int servoPin,int newAngle) {
-    // Serial.print(newAngle); Serial.print(" "); Serial.println(servo.read());
-    if (newAngle != servo.read()) {
-         if (!servo.attached()) {
-             servo.attach(servoPin);
-         }
-        servo.write(newAngle);
-        Serial.println(newAngle);
-        // Serial.println(newAngle);
-    }
-     else if (servo.attached()) {
-         servo.detach();
-     }
-}
+// void RobotHand::writeToServo(Servo servo, int servoPin,int newAngle) {
+//     // Serial.print(newAngle); Serial.print(" "); Serial.println(servo.read());
+//     if (newAngle != servo.read()) {
+//          if (!servo.attached()) {
+//              servo.attach(servoPin);
+//          }
+//         servo.write(newAngle);
+//         Serial.println(newAngle);
+//         // Serial.println(newAngle);
+//     }
+//      else if (servo.attached()) {
+//          servo.detach();
+//      }
+// }
