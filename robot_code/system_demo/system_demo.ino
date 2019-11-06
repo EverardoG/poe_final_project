@@ -1,6 +1,5 @@
 // #include "HumanHand.h"
 #include "rgpt_lib.h"
-#include <Servo.h>
 
 HumanHand humanhand;
 RobotHand robothand;
@@ -8,32 +7,35 @@ RobotHand robothand;
 int buttonPressed;
 sensors_vec_t handOrientation;
 
-int pitch_angle;
-int yaw_angle;
-int roll_angle;
+float pitch_angle;
+float roll_angle;
 
 void setup(void)
 {
   Serial.begin(115200);
   humanhand.init(2); // initializes hand with button pin at pin 2
-  robothand.init(11, 6, 5, 9); // pitch, yaw, roll, pinch
+  robothand.init(9, 8, 3, 2); // left_step_pin, left_direction_pin, right_step_pin, right_direction_pin
 }
 
 void loop(void)
 {
   long startTime = millis();
+
   // SENSE
   humanhand.updateSensors();
   buttonPressed = humanhand.getFingerStatus();
   sensors_vec_t handOrientation = humanhand.getHandOrientation();
 
   // THINK
+  if (handOrientation.pitch >= 0) { pitch_angle = robothand.remap(handOrientation.pitch, 0.0, -180.0, 0.0, 180.0); }
+  else { pitch_angle = robothand.remap(handOrientation.pitch, 0.0, 180.0, 0.0, -180.0); }
 
-  pitch_angle = robothand.remapAngle(handOrientation.pitch, 260, 30, 180, 60);
-  yaw_angle = robothand.remapAngle(handOrientation.heading, 50, 230, 45, 135);
-  roll_angle = robothand.remapAngle(handOrientation.roll, 120, 260, 180, 0);
+  if (handOrientation.roll >= 0) { roll_angle = robothand.remap(handOrientation.roll, 180.0, 0.0, 0.0, 180.0); }
+  else { roll_angle = robothand.remap(handOrientation.roll, -180.0, 0.0, 0.0, -180.0); }
 
-  robothand.setOrientation(pitch_angle, yaw_angle, roll_angle); //pitch, yaw, roll
+  Serial.print("Pitch: "); Serial.print(pitch_angle); Serial.print(" | Roll: "); Serial.println(roll_angle);
+
+  robothand.setOrientation(pitch_angle, roll_angle); //pitch, roll
   robothand.setClaw(buttonPressed);
 
   // ACT

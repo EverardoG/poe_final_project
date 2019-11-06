@@ -1,0 +1,4 @@
+- check the current for the stepper motr about 2 maybe
+- if 2, set current to 1.5 amps - whatever it is, set it 25% lower
+- solve for vref Current Limit = VREF × 2 - current limit is the 25% lower one
+- that's what the pot voltage will have to be
