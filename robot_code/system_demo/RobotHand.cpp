@@ -5,13 +5,15 @@ RobotHand::RobotHand()
 {
 }
 
-void RobotHand::init(int left_step_pin, int left_direction_pin, int right_step_pin, int right_direction_pin)
+void RobotHand::init(int left_step_pin, int left_direction_pin, int right_step_pin, int right_direction_pin, int pinch_pin)
 {
 
     int leftStepPin = left_step_pin;
     int leftDirectionPin = left_direction_pin;
     int rightStepPin = right_step_pin;
     int rightDirectionPin = right_direction_pin;
+
+    pinchPin = pinch_pin;
 
     LeftStepper.connectToPins(leftStepPin, leftDirectionPin);
     RightStepper.connectToPins(rightStepPin, rightDirectionPin);
@@ -23,6 +25,8 @@ void RobotHand::init(int left_step_pin, int left_direction_pin, int right_step_p
     RightStepper.setCurrentPositionInSteps(0);
     RightStepper.setSpeedInStepsPerSecond(10000);
     RightStepper.setAccelerationInStepsPerSecondPerSecond(10000);
+
+    PinchServo.attach(pinchPin);
 
 }
 
@@ -45,15 +49,18 @@ void RobotHand::setOrientation(int pitch_angle, int roll_angle)
 void RobotHand::setClaw(int button_press)
 {
     if (button_press == 1) {
-        pinchAngle = 0;
+        pinchAngle = 50;
     }
     else {
-        pinchAngle = 45;
+        pinchAngle = 160;
     }
+    Serial.println(pinchAngle);
 }
 
 void RobotHand::updateActuators()
 {
+    PinchServo.write(pinchAngle);
+
     long startTime = millis();
     long endInterval = 10;
 

@@ -58,6 +58,7 @@ void HumanHand::updateSensors()
     UPDATE FINGER STATUS
      */
     fingerStatus = digitalRead(buttonPin);
+    Serial.print(fingerStatus);
 
     /*
     UPDATE HAND ORIENTATION

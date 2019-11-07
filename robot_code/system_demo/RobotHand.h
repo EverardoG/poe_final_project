@@ -11,7 +11,7 @@ class RobotHand
 {
   public:
     RobotHand();
-    void init(int left_step_pin, int left_direction_pin, int right_step_pin, int right_direction_pin);
+    void init(int left_step_pin, int left_direction_pin, int right_step_pin, int right_direction_pin, int pinch_pin);
     float remapAngle(float old_angle, float old_min, float old_max, float new_min, float new_max);
     float remap(float old_val, float old_min, float old_max, float new_min, float new_max);
     void setOrientation(int pitch_angle, int roll_angle);
@@ -27,12 +27,14 @@ class RobotHand
     int leftDirectionPin;
     int rightStepPin;
     int rightDirectionPin;
+    int pinchPin;
 
     int leftStepperPos;
     int rightStepperPos;
 
     FlexyStepper LeftStepper;
     FlexyStepper RightStepper;
+    Servo PinchServo;
 
     bool isClosed;
 };

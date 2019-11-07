@@ -13,8 +13,8 @@ float roll_angle;
 void setup(void)
 {
   Serial.begin(115200);
-  humanhand.init(2); // initializes hand with button pin at pin 2
-  robothand.init(9, 8, 3, 2); // left_step_pin, left_direction_pin, right_step_pin, right_direction_pin
+  humanhand.init(4); // initializes hand with button pin at pin 2
+  robothand.init(9, 8, 3, 2, 11); // left_step_pin, left_direction_pin, right_step_pin, right_direction_pin, pinch_pin
 }
 
 void loop(void)
@@ -33,9 +33,10 @@ void loop(void)
   if (handOrientation.roll >= 0) { roll_angle = robothand.remap(handOrientation.roll, 180.0, 0.0, 0.0, 180.0); }
   else { roll_angle = robothand.remap(handOrientation.roll, -180.0, 0.0, 0.0, -180.0); }
 
-  Serial.print("Pitch: "); Serial.print(pitch_angle); Serial.print(" | Roll: "); Serial.println(roll_angle);
+  // Serial.print("Pitch: "); Serial.print(pitch_angle); Serial.print(" | Roll: "); Serial.println(roll_angle);
 
   robothand.setOrientation(pitch_angle, roll_angle); //pitch, roll
+  Serial.println(buttonPressed);
   robothand.setClaw(buttonPressed);
 
   // ACT
