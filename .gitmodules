@@ -22,3 +22,6 @@
 [submodule "dependencies/Adafruit_FXOS8700"]
 	path = dependencies/Adafruit_FXOS8700
 	url = git@github.com:adafruit/Adafruit_FXOS8700.git
+[submodule "dependencies/Adafruit_AHRS"]
+	path = dependencies/Adafruit_AHRS
+	url = git@github.com:adafruit/Adafruit_AHRS.git
