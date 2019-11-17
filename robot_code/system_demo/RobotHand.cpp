@@ -28,6 +28,38 @@ void RobotHand::init(int left_step_pin, int left_direction_pin, int right_step_p
 
     PinchServo.attach(pinchPin);
 
+    // this code sets up the imu
+    if (!gyro.begin())
+    {
+        /* There was a problem detecting the gyro ... check your connections */
+        Serial.println("Ooops, no gyro detected ... Check your wiring!");
+        while (1);
+    }
+    #if AHRS_VARIANT == NXP_FXOS8700_FXAS21002
+    if (!accelmag.begin(ACCEL_RANGE_4G))
+    {
+        Serial.println("Ooops, no FXOS8700 detected ... Check your wiring!");
+        while (1);
+    }
+    #else
+    if (!accel.begin())
+    {
+        /* There was a problem detecting the accel ... check your connections */
+        Serial.println("Ooops, no accel detected ... Check your wiring!");
+        while (1);
+    }
+
+    if (!mag.begin())
+    {
+        /* There was a problem detecting the mag ... check your connections */
+        Serial.println("Ooops, no mag detected ... Check your wiring!");
+        while (1);
+    }
+    #endif
+
+    // filter expect as an input the sampling rate of the sensor
+    // in our case, that's 10 hz because that's how fast our code runs
+    filter.begin(10);
 }
 
 void RobotHand::setOrientation(int pitch_angle, int roll_angle)
@@ -55,6 +87,58 @@ void RobotHand::setClaw(int button_press)
         pinchAngle = 160;
     }
     Serial.println(pinchAngle);
+}
+void RobotHand::updateSensors()
+{
+    sensors_event_t gyro_event;
+    sensors_event_t accel_event;
+    sensors_event_t mag_event;
+
+    // Get new data samples
+    gyro.getEvent(&gyro_event);
+    #if AHRS_VARIANT == NXP_FXOS8700_FXAS21002
+    accelmag.getEvent(&accel_event, &mag_event);
+    #else
+    accel.getEvent(&accel_event);
+    mag.getEvent(&mag_event);
+    #endif
+
+    // Apply mag offset compensation (base values in uTesla)
+    float x = mag_event.magnetic.x - mag_offsets[0];
+    float y = mag_event.magnetic.y - mag_offsets[1];
+    float z = mag_event.magnetic.z - mag_offsets[2];
+
+    // Apply mag soft iron error compensation
+    float mx = x * mag_softiron_matrix[0][0] + y * mag_softiron_matrix[0][1] + z * mag_softiron_matrix[0][2];
+    float my = x * mag_softiron_matrix[1][0] + y * mag_softiron_matrix[1][1] + z * mag_softiron_matrix[1][2];
+    float mz = x * mag_softiron_matrix[2][0] + y * mag_softiron_matrix[2][1] + z * mag_softiron_matrix[2][2];
+
+    // Apply gyro zero-rate error compensation
+    float gx = gyro_event.gyro.x + gyro_zero_offsets[0];
+    float gy = gyro_event.gyro.y + gyro_zero_offsets[1];
+    float gz = gyro_event.gyro.z + gyro_zero_offsets[2];
+
+    // The filter library expects gyro data in degrees/s, but adafruit sensor
+    // uses rad/s so we need to convert them first (or adapt the filter lib
+    // where they are being converted)
+    gx *= 57.2958F;
+    gy *= 57.2958F;
+    gz *= 57.2958F;
+
+    // Update the filter
+    //You can download the requested file from the pool / main / libp / libpng / subdirectory at:    security.ubuntu.com / ubuntu
+    filter.update(gx, gy, gz,
+                    accel_event.acceleration.x, accel_event.acceleration.y, accel_event.acceleration.z,
+                    mx, my, mz);
+
+    // Print the orientation filter output
+    // Note: To avoid gimbal lock you should read quaternions not Euler
+    // angles, but Euler angles are used here since they are easier to
+    // understand looking at the raw values. See the ble fusion sketch for
+    // and example of working with quaternion data.
+    // float roll = filter.getRoll();
+    // float pitch = filter.getPitch();
+    // float heading = filter.getYaw();
 }
 
 void RobotHand::updateActuators()
