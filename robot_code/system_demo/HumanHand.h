@@ -2,6 +2,9 @@
 #ifndef HumanHand_h
 #define HumanHand_h
 
+// test- may fix gyroscope name conflicts
+// namespace HUMAND_HAND
+// {
 // for standard arudino things
 #include <Arduino.h>
 
@@ -50,6 +53,6 @@ class HumanHand
     float lastRoll;
 
     boolean firstRun;
-};
-
+  };
+// }
 #endif

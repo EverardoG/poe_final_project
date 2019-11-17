@@ -5,7 +5,7 @@ HumanHand humanhand;
 RobotHand robothand;
 
 int buttonPressed;
-sensors_vec_t handOrientation;
+// HUMAND_HAND::sensors_vec_t handOrientation;
 
 float pitch_angle;
 float roll_angle;

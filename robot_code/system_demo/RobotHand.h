@@ -2,15 +2,20 @@
 #ifndef RobotHand_h
 #define RobotHand_h
 
+// test - might fix naming problems
+// namespace ROBOT_HAND
+// {
+
 // for standard arudino library and servos
 #include <Arduino.h>
 #include <Servo.h>
 #include <FlexyStepper.h>
+
+// ------ this is all for the 9dof imu on the RobotHand
+#include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Mahony.h>
 
-
-// ------ this is all for the 9dof imu on the RobotHand
 #define ST_LSM303DLHC_L3GD20        (0)
 #define ST_LSM9DS1                  (1)
 #define NXP_FXOS8700_FXAS21002      (2)
@@ -29,16 +34,20 @@
 #endif
 
 // Create sensor instances.
-#if AHRS_VARIANT == ST_LSM303DLHC_L3GD20
-Adafruit_L3GD20_Unified       gyro(20);
-Adafruit_LSM303_Accel_Unified accel(30301);
-Adafruit_LSM303_Mag_Unified   mag(30302);
-#elif AHRS_VARIANT == ST_LSM9DS1
-// ToDo!
-#elif AHRS_VARIANT == NXP_FXOS8700_FXAS21002
-Adafruit_FXAS21002C gyro = Adafruit_FXAS21002C(0x0021002C);
-Adafruit_FXOS8700 accelmag = Adafruit_FXOS8700(0x8700A, 0x8700B);
-#endif
+// #if AHRS_VARIANT == ST_LSM303DLHC_L3GD20
+// Adafruit_L3GD20_Unified       gyro(20);
+// Adafruit_LSM303_Accel_Unified accel(30301);
+// Adafruit_LSM303_Mag_Unified   mag(30302);
+// #elif AHRS_VARIANT == ST_LSM9DS1
+// // ToDo!
+// #elif AHRS_VARIANT == NXP_FXOS8700_FXAS21002
+
+// using FX::Adafruit_FXAS21002C;
+// using FX::Adafruit_FXOS8700;
+// extern Adafruit_FXAS21002C gyro;
+// extern Adafruit_FXOS8700 accelmag;
+
+// #endif
 
 // ------ end all the gyro stuff
 
@@ -90,5 +99,5 @@ class RobotHand
     // Offsets applied to compensate for gyro zero-drift error for x/y/z
     float gyro_zero_offsets[3]      = { 2.0F, 0.0F, 0.0F };
     };
-
+// }
 #endif

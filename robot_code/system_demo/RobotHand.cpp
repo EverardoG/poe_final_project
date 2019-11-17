@@ -1,6 +1,16 @@
 #include <Arduino.h>
 #include "RobotHand.h"
 
+// using namespace FX;
+// using namespace ROBOT_HAND;
+// using FX::Adafruit_FXAS21002C;
+// using FX::Adafruit_FXOS8700;
+using FX::Adafruit_FXAS21002C;
+using FX::Adafruit_FXOS8700;
+Adafruit_FXAS21002C gyro = Adafruit_FXAS21002C(0x0021002C);
+Adafruit_FXOS8700 accelmag = Adafruit_FXOS8700(0x8700A, 0x8700B);
+
+
 RobotHand::RobotHand()
 {
 }
@@ -28,7 +38,11 @@ void RobotHand::init(int left_step_pin, int left_direction_pin, int right_step_p
 
     PinchServo.attach(pinchPin);
 
+    // using namespace FX;
     // this code sets up the imu
+    // using FX::AHRS_VARIANT;
+    // using FX::NXP_FXOS8700_FXAS21002;
+
     if (!gyro.begin())
     {
         /* There was a problem detecting the gyro ... check your connections */
@@ -36,6 +50,7 @@ void RobotHand::init(int left_step_pin, int left_direction_pin, int right_step_p
         while (1);
     }
     #if AHRS_VARIANT == NXP_FXOS8700_FXAS21002
+    using FX::ACCEL_RANGE_4G;
     if (!accelmag.begin(ACCEL_RANGE_4G))
     {
         Serial.println("Ooops, no FXOS8700 detected ... Check your wiring!");
@@ -90,18 +105,24 @@ void RobotHand::setClaw(int button_press)
 }
 void RobotHand::updateSensors()
 {
+    // sensor_t senseboi;
+    // gyro.getSensor(&senseboi);// throws error with getSensor
+    // using namespace FX;
+    // using FX::sensors_event_t;
     sensors_event_t gyro_event;
     sensors_event_t accel_event;
     sensors_event_t mag_event;
+    // gyro.begin(mag_event);// doesnt throw an error with the begin method
 
     // Get new data samples
-    gyro.getEvent(&gyro_event);
-    #if AHRS_VARIANT == NXP_FXOS8700_FXAS21002
-    accelmag.getEvent(&accel_event, &mag_event);
-    #else
-    accel.getEvent(&accel_event);
-    mag.getEvent(&mag_event);
-    #endif
+    // using FX::Adafruit_FXAS21002C;
+    gyro.getEvent(&gyro_event); // throws error with getEvent
+    // #if AHRS_VARIANT == NXP_FXOS8700_FXAS21002
+    // accelmag.getEvent(&accel_event, &mag_event);
+    // #else
+    // accel.getEvent(&accel_event);
+    // mag.getEvent(&mag_event);
+    // #endif
 
     // Apply mag offset compensation (base values in uTesla)
     float x = mag_event.magnetic.x - mag_offsets[0];
