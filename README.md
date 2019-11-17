@@ -10,11 +10,11 @@ git submodule update
 ```
 
 To make your dependecies work, all you have to do is copy all of the folders inside of `dependencies` into wherever your `Arduino/libraries` folder is.
-
+<!---
 ## Making dependecies work
 Since all the dependencies are actually git submodules and submodules work weird, you're going to have to do some extra steps to get all the code you need. All you have to do is go into where you've cloned your repo and do the following:
 
-<!---
+
 
 ```
 git submodule init
