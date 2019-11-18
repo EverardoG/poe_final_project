@@ -12,7 +12,16 @@
 	url = https://github.com/adafruit/Adafruit_LSM303DLHC
 [submodule "dependencies/Adafruit_Sensor"]
 	path = dependencies/Adafruit_Sensor
-	url = https://github.com/adafruit/Adafruit_Sensor
+	url = git@github.com:adafruit/Adafruit_Sensor.git
 [submodule "dependencies/Filters"]
 	path = dependencies/Filters
 	url = git@github.com:JonHub/Filters.git
+[submodule "dependencies/Adafruit_FXAS21002C"]
+	path = dependencies/Adafruit_FXAS21002C
+	url = git@github.com:EverardoG/Adafruit_FXAS21002C.git
+[submodule "dependencies/Adafruit_FXOS8700"]
+	path = dependencies/Adafruit_FXOS8700
+	url = git@github.com:EverardoG/Adafruit_FXOS8700.git
+[submodule "dependencies/Adafruit_AHRS"]
+	path = dependencies/Adafruit_AHRS
+	url = git@github.com:adafruit/Adafruit_AHRS.git

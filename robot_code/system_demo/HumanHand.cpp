@@ -1,6 +1,9 @@
 #include <Arduino.h>
 #include "HumanHand.h"
 
+// using namespace HUMAND_HAND;
+// {
+
 HumanHand::HumanHand()
 {
 }
@@ -111,4 +114,5 @@ void HumanHand::updateSensors()
     // Serial.print("Pitch: "); Serial.print(orientation.pitch); Serial.print(" | Roll: "); Serial.println(orientation.roll);
 
     handOrientation = orientation;
-}
+    }
+// }
