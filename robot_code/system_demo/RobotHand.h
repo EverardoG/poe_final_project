@@ -15,6 +15,7 @@
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Mahony.h>
+#include <Madgwick.h>
 
 #define ST_LSM303DLHC_L3GD20        (0)
 #define ST_LSM9DS1                  (1)
@@ -97,7 +98,7 @@ class RobotHand
     float mag_field_strength        = 57.53F;
 
     // Offsets applied to compensate for gyro zero-drift error for x/y/z
-    float gyro_zero_offsets[3]      = { 2.0F, 0.0F, 0.0F };
+    float gyro_zero_offsets[3]      = { 0.0F, 0.0F, 0.0F };
     };
 // }
 #endif

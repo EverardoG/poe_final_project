@@ -74,7 +74,7 @@ void RobotHand::init(int left_step_pin, int left_direction_pin, int right_step_p
 
     // filter expect as an input the sampling rate of the sensor
     // in our case, that's 10 hz because that's how fast our code runs
-    filter.begin(10);
+    filter.begin(50.0);
 }
 
 void RobotHand::setOrientation(int pitch_angle, int roll_angle)
@@ -101,7 +101,7 @@ void RobotHand::setClaw(int button_press)
     else {
         pinchAngle = 160;
     }
-    Serial.println(pinchAngle);
+//    Serial.println(pinchAngle);
 }
 void RobotHand::updateSensors()
 {
