@@ -8,7 +8,7 @@ HumanHand::HumanHand()
 {
 }
 
-void HumanHand::init(int button_pin)
+void HumanHand::init(int button_pin, int cal_button_pin)
 {
     // get IMU ready to roll
     /* Assign a unique ID to the sensors */
@@ -35,7 +35,8 @@ void HumanHand::init(int button_pin)
     // set up our button
     buttonPin = button_pin;
     pinMode(buttonPin, INPUT);
-
+    calButtonPin = cal_button_pin;
+    pinMode(calButtonPin, INPUT);
     // set up Filter
     FilterOnePole rollXLowpassFilter( LOWPASS, roll_filter_frequency);
     FilterOnePole rollYLowpassFilter( LOWPASS, roll_filter_frequency);
@@ -50,6 +51,11 @@ int HumanHand::getFingerStatus()
     return fingerStatus;
 }
 
+int HumanHand::getCalStatus()
+{
+    return calStatus;
+}
+
 sensors_vec_t HumanHand::getHandOrientation()
 {
     return handOrientation;
@@ -62,6 +68,7 @@ void HumanHand::updateSensors()
      */
     fingerStatus = digitalRead(buttonPin);
     Serial.print(fingerStatus);
+    calStatus = digitalRead(calButtonPin);
 
     /*
     UPDATE HAND ORIENTATION
@@ -90,7 +97,7 @@ void HumanHand::updateSensors()
     // recombine the two values into an angle
     // This is necessary because of the wrapping that occurs at 0,360
 
-    orientation.pitch += 180.0;
+    orientation.pitch += 180.0; 
     orientation.pitch *= 3.14/180.0;
     float pitch_x = cos(orientation.pitch);
     float pitch_y = sin(orientation.pitch);
@@ -115,4 +122,12 @@ void HumanHand::updateSensors()
 
     handOrientation = orientation;
     }
+//void HumanHand::calibration(int calButtonPress)
+//{
+//    pitch_x = 0;
+//    pitch_y = 0;
+//    roll_x = 0;
+//    pitch_y = 0;
+//}
+
 // }

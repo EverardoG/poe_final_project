@@ -6,6 +6,7 @@ RobotHand robothand;
 
 int buttonPressed;
 // HUMAND_HAND::sensors_vec_t handOrientation;
+int calButtonPressed;
 
 float pitch_angle;
 float roll_angle;
@@ -20,7 +21,7 @@ long loop_time = 100; // this is how fast our real time loop runs in millisecond
 void setup(void)
 {
   Serial.begin(115200);
-  humanhand.init(4); // initializes hand with button pin at pin 2
+  humanhand.init(4,6); // initializes hand with button pin at pin 2
   robothand.init(9, 8, 3, 2, 11); // left_step_pin, left_direction_pin, right_step_pin, right_direction_pin, pinch_pin
 }
 
@@ -32,6 +33,7 @@ void loop(void)
     humanhand.updateSensors();
     robothand.updateSensors();
     buttonPressed = humanhand.getFingerStatus();
+    calButtonPressed = humanhand.getCalStatus();
     sensors_vec_t handOrientation = humanhand.getHandOrientation();
 
     // THINK
@@ -53,6 +55,10 @@ void loop(void)
     Serial.print(robot_pitch); Serial.print(" | "); Serial.println(robot_roll);
 
     // ACT
+    if (calButtonPressed==1){
+      //humanhand.calibration
+      robothand.calibration();
+    }
     robothand.updateActuators();
     // Serial.println(delTime);
   }

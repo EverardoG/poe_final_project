@@ -63,7 +63,7 @@ class RobotHand
     void updateSensors();
     void updateActuators();
     Mahony filter;
-
+    void calibration();
   private:
     int pitchAngle;
     int rollAngle;

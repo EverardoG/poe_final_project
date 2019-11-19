@@ -23,14 +23,17 @@ class HumanHand
 {
   public:
     HumanHand();
-    void init(int button_pin);
+    void init(int button_pin, int cal_button_pin);
     void updateSensors();
     int getFingerStatus();
+    int getCalStatus();
     sensors_vec_t getHandOrientation();
 
   private:
     int buttonPin;
+    int calButtonPin;
     int fingerStatus;
+    int calStatus;
     sensors_vec_t handOrientation;
 
     sensors_event_t accel_event;

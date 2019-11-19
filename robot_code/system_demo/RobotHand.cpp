@@ -170,8 +170,8 @@ void RobotHand::updateActuators()
     long endInterval = 10;
 
     // run steppers for the specified endInterval in milliseconds
-    while (!LeftStepper.motionComplete() && !RightStepper.motionComplete() && (millis() - startTime) < endInterval){
-        boolean isTrue = (millis() - startTime) < endInterval;
+    while (!LeftStepper.motionComplete() && !RightStepper.motionComplete() && (millis() - startTime) < endInterval){ // if right and left motors have not completed motion and you haven't finished end interval
+        boolean isTrue = (millis() - startTime) < endInterval; //when the time interval from start is less than end interval
         // Serial.print(millis()); Serial.print(" | ");
         // Serial.print(startTime); Serial.print(" | ");
         // Serial.println(isTrue);
@@ -230,7 +230,20 @@ float RobotHand::remapAngle(float old_angle, float old_min, float old_max, float
 
     return new_angle;
 }
+  void RobotHand::calibration()
+  {
+    //original_pitch= 
+    //original_roll= 
+    
+    //int new_pitch = remap();
 
+    //robothand.setOrientation(originalpitch, originalroll); //pitch, roll
+    
+    float robot_pitch = filter.getPitch();
+    float robot_roll = filter.getRoll();
+    updateActuators();
+  }
+  
 // void RobotHand::writeToServo(Servo servo, int servoPin,int newAngle) {
 //     // Serial.print(newAngle); Serial.print(" "); Serial.println(servo.read());
 //     if (newAngle != servo.read()) {
