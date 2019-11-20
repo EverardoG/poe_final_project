@@ -42,7 +42,7 @@ void setup(void)
 {
   Serial.begin(115200);
   Serial.println(F("Adafruit 9 DOF Pitch/Roll/Heading Example")); Serial.println("");
-  
+
   /* Initialise the sensors */
   initSensors();
 }
@@ -70,7 +70,7 @@ void loop(void)
     Serial.print(orientation.pitch);
     Serial.print(F("; "));
   }
-  
+
   /* Calculate the heading using the magnetometer */
   if (dof.magGetOrientation(SENSOR_AXIS_Z, &mag_event, &orientation))
   {
