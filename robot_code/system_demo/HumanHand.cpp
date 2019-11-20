@@ -8,7 +8,7 @@ HumanHand::HumanHand()
 {
 }
 
-void HumanHand::init(int button_pin)
+void HumanHand::init(int button_pin, int flex_pin)
 {
     // get IMU ready to roll
     /* Assign a unique ID to the sensors */
@@ -16,20 +16,15 @@ void HumanHand::init(int button_pin)
     Adafruit_LSM303_Accel_Unified accel = Adafruit_LSM303_Accel_Unified(30301);
     Adafruit_LSM303_Mag_Unified   mag   = Adafruit_LSM303_Mag_Unified(30302);
 
-    /* Update this with the correct SLP for accurate altitude measurements */
-    float seaLevelPressure = SENSORS_PRESSURE_SEALEVELHPA;
-
     // necessary for IMU
     if (!accel.begin())
     {
-        /* There was a problem detecting the LSM303 ... check your connections */
-        // Serial.println(F("Ooops, no LSM303 detected ... Check your wiring!"));
+        Serial.println(F("Ooops, no LSM303 detected ... Check your wiring!"));
         while (1);
     }
     if (!mag.begin())
     {
-        /* There was a problem detecting the LSM303 ... check your connections */
-        // Serial.println("Ooops, no LSM303 detected ... Check your wiring!");
+        Serial.println("Ooops, no LSM303 detected ... Check your wiring!");
         while (1);
     }
     // set up our button
@@ -41,8 +36,6 @@ void HumanHand::init(int button_pin)
     FilterOnePole rollYLowpassFilter( LOWPASS, roll_filter_frequency);
     FilterOnePole pitchXLowpassFilter( LOWPASS, pitch_filter_frequency);
     FilterOnePole pitchYLowpassFilter( LOWPASS, pitch_filter_frequency);
-
-
 }
 
 int HumanHand::getFingerStatus()
@@ -60,29 +53,28 @@ void HumanHand::updateSensors()
     /*
     UPDATE FINGER STATUS
      */
-    fingerStatus = digitalRead(buttonPin);
-    Serial.print(fingerStatus);
+
+    // @Jamie change this to make sense for the current glove
+    int button_status = digitalRead(buttonPin);
+    int flex_states = analogRead(flexPin);
+    fingerStatus = button_status;
 
     /*
     UPDATE HAND ORIENTATION
      */
 
-    // TODO: unclear why these are here - do we need to define these each time?
-
-
     /* Calculate pitch and roll from the raw accelerometer data */
     accel.getEvent(&accel_event);
     if (!dof.accelGetOrientation(&accel_event, &orientation))
     {
-        // TODO: figure out how to raise an exception
-        int error;
+        Serial.println("ERROR: dof.accelGetOrientation in HumanHand failed");
     }
 
     /* Calculate the heading using the magnetometer */
     mag.getEvent(&mag_event);
     if (!dof.magGetOrientation(SENSOR_AXIS_Z, &mag_event, &orientation))
     {
-        int error;
+        Serial.println("ERROR: dof.magGetOrientation in HumanHand failed");
     }
 
 
@@ -109,10 +101,7 @@ void HumanHand::updateSensors()
     float roll_y_filtered = rollYLowpassFilter.input(roll_y);
 
     orientation.roll = atan2(roll_y_filtered, roll_x_filtered) * 180.0/3.14;
-    // Serial.println(orientation.roll);
-
     // Serial.print("Pitch: "); Serial.print(orientation.pitch); Serial.print(" | Roll: "); Serial.println(orientation.roll);
 
     handOrientation = orientation;
-    }
-// }
+}

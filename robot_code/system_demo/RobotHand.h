@@ -2,19 +2,13 @@
 #ifndef RobotHand_h
 #define RobotHand_h
 
-// test - might fix naming problems
-// namespace ROBOT_HAND
-// {
-
 // for standard arudino library and servos
 #include <Arduino.h>
 #include <Servo.h>
 #include <FlexyStepper.h>
-
-// ------ this is all for the 9dof imu on the RobotHand
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
-#include <Mahony.h>
+#include <Adafruit_9DOF.h>
 
 #define ST_LSM303DLHC_L3GD20        (0)
 #define ST_LSM9DS1                  (1)
@@ -33,71 +27,50 @@
 #error "AHRS_VARIANT undefined! Please select a target sensor combination!"
 #endif
 
-// Create sensor instances.
-// #if AHRS_VARIANT == ST_LSM303DLHC_L3GD20
-// Adafruit_L3GD20_Unified       gyro(20);
-// Adafruit_LSM303_Accel_Unified accel(30301);
-// Adafruit_LSM303_Mag_Unified   mag(30302);
-// #elif AHRS_VARIANT == ST_LSM9DS1
-// // ToDo!
-// #elif AHRS_VARIANT == NXP_FXOS8700_FXAS21002
-
-// using FX::Adafruit_FXAS21002C;
-// using FX::Adafruit_FXOS8700;
-// extern Adafruit_FXAS21002C gyro;
-// extern Adafruit_FXOS8700 accelmag;
-
-// #endif
-
-// ------ end all the gyro stuff
-
 class RobotHand
 {
   public:
     RobotHand();
-    void init(int left_step_pin, int left_direction_pin, int right_step_pin, int right_direction_pin, int pinch_pin);
+    void init(int left_step_pin, int left_direction_pin, int right_step_pin, int right_direction_pin, int pinch_pin_1, int pinch_pin_2);
     float remapAngle(float old_angle, float old_min, float old_max, float new_min, float new_max);
     float remap(float old_val, float old_min, float old_max, float new_min, float new_max);
     void setOrientation(int pitch_angle, int roll_angle);
     void setClaw(int button_press);
     void updateSensors();
     void updateActuators();
-    Mahony filter;
+    sensors_vec_t getRobotOrientation();
+    void resetSteppers();
+    int mode = 0;
 
   private:
+    sensors_event_t accel_event;
+    sensors_event_t mag_event;
+    sensors_vec_t   orientation;
+
+    sensors_vec_t   robotOrientation;
+
     int pitchAngle;
     int rollAngle;
-    int pinchAngle;
+
+    int pinchAngle1;
+    int pinchAngle2;
 
     int leftStepPin;
     int leftDirectionPin;
     int rightStepPin;
     int rightDirectionPin;
-    int pinchPin;
+    int pinchPin1;
+    int pinchPin2;
 
     int leftStepperPos;
     int rightStepperPos;
 
+    Servo PinchServo1;
+    Servo PinchServo2;
+
     FlexyStepper LeftStepper;
     FlexyStepper RightStepper;
-    Servo PinchServo;
 
     bool isClosed;
-
-    // these variables are all for the gyro
-    // Offsets applied to raw x/y/z mag values
-    float mag_offsets[3]            = { 20.09F, 76.32F, 123.17F };
-
-    // Soft iron error compensation matrix
-    float mag_softiron_matrix[3][3] = { {  0.987, -0.013, -0.019 },
-      { -0.013,  1.051, -0.020 },
-      { -0.019, -0.020,  0.967 }
-    };
-
-    float mag_field_strength        = 57.53F;
-
-    // Offsets applied to compensate for gyro zero-drift error for x/y/z
-    float gyro_zero_offsets[3]      = { 2.0F, 0.0F, 0.0F };
-    };
-// }
+};
 #endif
