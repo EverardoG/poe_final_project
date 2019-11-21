@@ -40,7 +40,7 @@ void HumanHand::init(int button_pin, int flex_pin)
 
 int HumanHand::getFingerStatus()
 {
-    return fingerStatus;
+    return pointerStatus, thumbStatus;
 }
 
 sensors_vec_t HumanHand::getHandOrientation()
@@ -55,9 +55,11 @@ void HumanHand::updateSensors()
      */
 
     // @Jamie change this to make sense for the current glove
-    int button_status = digitalRead(buttonPin);
-    int flex_states = analogRead(flexPin);
-    fingerStatus = button_status;
+    //int button_status = digitalRead(buttonPin);
+    int pointer_status = analogRead(pointerPin);
+    int thumb_status = analogRead(thumbPin);
+    pointerStatus = pointer_status;
+    thumbStatus = thumb_status;
 
     /*
     UPDATE HAND ORIENTATION

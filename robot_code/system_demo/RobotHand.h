@@ -52,8 +52,8 @@ class RobotHand
     int pitchAngle;
     int rollAngle;
 
-    int pinchAngle1;
-    int pinchAngle2;
+    int thumbAngle;
+    int pointerAngle;
 
     int leftStepPin;
     int leftDirectionPin;
