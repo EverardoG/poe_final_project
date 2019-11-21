@@ -21,7 +21,7 @@
 #elif AHRS_VARIANT == ST_LSM9DS1
 // ToDo!
 #elif AHRS_VARIANT == NXP_FXOS8700_FXAS21002
-#include <Adafruit_FXAS21002C.h>
+//#include <Adafruit_FXAS21002C.h>
 #include <Adafruit_FXOS8700.h>
 #else
 #error "AHRS_VARIANT undefined! Please select a target sensor combination!"
@@ -41,6 +41,8 @@ class RobotHand
     sensors_vec_t getRobotOrientation();
     void resetSteppers();
     int mode = 0;
+    FlexyStepper LeftStepper;
+    FlexyStepper RightStepper;
 
   private:
     sensors_event_t accel_event;
@@ -67,9 +69,6 @@ class RobotHand
 
     Servo PinchServo1;
     Servo PinchServo2;
-
-    FlexyStepper LeftStepper;
-    FlexyStepper RightStepper;
 
     bool isClosed;
 };

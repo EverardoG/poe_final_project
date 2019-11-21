@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include "RobotHand.h"
 
-using FX::Adafruit_FXAS21002C;
-using FX::Adafruit_FXOS8700;
+//using FX::Adafruit_FXAS21002C;
+//using FX::Adafruit_FXOS8700;
 // Adafruit_FXAS21002C gyro = Adafruit_FXAS21002C(0x0021002C);
 Adafruit_9DOF                dof   = Adafruit_9DOF();
 Adafruit_FXOS8700 accelmag = Adafruit_FXOS8700(0x8700A, 0x8700B);
@@ -36,7 +36,7 @@ void RobotHand::init(int left_step_pin, int left_direction_pin, int right_step_p
     PinchServo1.attach(pinchPin1);
     PinchServo2.attach(pinchPin2);
 
-    using FX::ACCEL_RANGE_4G;
+    //using FX::ACCEL_RANGE_4G;
     if (!accelmag.begin(ACCEL_RANGE_4G))
     {
         Serial.println("Ooops, no FXOS8700 detected ... Check your wiring!");
@@ -55,7 +55,7 @@ void RobotHand::setOrientation(int pitch_angle, int roll_angle)
     int leftStepperPos = (- (float) roll_angle / 2.0 - (float) pitch_angle) * 8.89;
     int rightStepperPos = (- (float) roll_angle / 2.0 + (float) pitch_angle) * 8.89;
 
-    // Serial.print("Left: "); Serial.print(leftStepperPos); Serial.print(" | Right: "); Serial.println(rightStepperPos);
+    Serial.print("Left: "); Serial.print(leftStepperPos); Serial.print(" | Right: "); Serial.println(rightStepperPos);
 
     LeftStepper.setTargetPositionInSteps(leftStepperPos);
     RightStepper.setTargetPositionInSteps(rightStepperPos);
