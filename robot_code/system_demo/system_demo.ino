@@ -8,7 +8,7 @@ int fingerStatus;
 int calButtonPressed;
 sensors_vec_t handOrientation;
 sensors_vec_t robotOrientation;
- 
+
 float pitch_angle;
 float roll_angle;
 float robot_pitch_angle;
@@ -68,17 +68,17 @@ void loop(void)
       robothand.updateSensors();
       robotOrientation = robothand.getRobotOrientation();
       robot_pitch_angle = robothand.remap(robotOrientation.roll, 0, -90, 90, 0);
-      while (robot_pitch_angle>5)
+      while (robot_pitch_angle > 5)
       {
-        robothand.LeftStepper.moveRelativeInSteps(-2); //assuming negative it clockwise facing the left stepper
-        robothand.RightStepper.moveRelativeInSteps(2); //assuming positive is counterclockwise facing the right stepper
+        //robothand.LeftStepper.moveRelativeInSteps(-2); //assuming negative it clockwise facing the left stepper
+        //robothand.RightStepper.moveRelativeInSteps(2); //assuming positive is counterclockwise facing the right stepper
         robothand.updateSensors();
         robotOrientation = robothand.getRobotOrientation();
-        new_robot_pitch_angle=robothand.remap(robotOrientation.roll, 0, -90, 90, 0);
-        if (new_robot_pitch_angle<robot_pitch_angle){
-          new_robot_pitch_angle=-new_robot_pitch_angle;
+        new_robot_pitch_angle = robothand.remap(robotOrientation.roll, 0, -90, 90, 0);
+        if (new_robot_pitch_angle < robot_pitch_angle) {
+          new_robot_pitch_angle = -new_robot_pitch_angle;
         }
-        
+
       }
       Serial.print(robot_pitch_angle);
       Serial.print(",");
@@ -94,14 +94,13 @@ void loop(void)
       {
         robot_roll_angle = -180 - robotOrientation.pitch;
       }
-      else 
+      else
       {
         robot_roll_angle = robotOrientation.pitch;
       }
-      
-      
+
+
       Serial.println(robot_roll_angle);
-    }
       // @jasmine this is where the actual calibration code should go
       // set the pitch_angle to something based on robotOrientation
       // set the roll_angle to something based on robotOrientation
@@ -144,3 +143,4 @@ void loop(void)
     // ACT
     robothand.updateActuators();
   }
+}
