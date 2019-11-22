@@ -21,7 +21,7 @@
 #elif AHRS_VARIANT == ST_LSM9DS1
 // ToDo!
 #elif AHRS_VARIANT == NXP_FXOS8700_FXAS21002
-#include <Adafruit_FXAS21002C.h>
+//#include <Adafruit_FXAS21002C.h>
 #include <Adafruit_FXOS8700.h>
 #else
 #error "AHRS_VARIANT undefined! Please select a target sensor combination!"
@@ -35,7 +35,7 @@ class RobotHand
     float remapAngle(float old_angle, float old_min, float old_max, float new_min, float new_max);
     float remap(float old_val, float old_min, float old_max, float new_min, float new_max);
     void setOrientation(int pitch_angle, int roll_angle);
-    void setClaw(int button_press);
+    void setClaw(int pointerStatus, int thumbStatus);
     void updateSensors();
     void updateActuators();
     sensors_vec_t getRobotOrientation();

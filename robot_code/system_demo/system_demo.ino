@@ -4,7 +4,8 @@
 HumanHand humanhand;
 RobotHand robothand;
 
-int fingerStatus;
+int thumbStatus;
+int pointerStatus;
 int calButtonPressed;
 sensors_vec_t handOrientation;
 sensors_vec_t robotOrientation;

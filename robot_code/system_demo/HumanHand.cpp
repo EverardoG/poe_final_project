@@ -8,7 +8,7 @@ HumanHand::HumanHand()
 {
 }
 
-void HumanHand::init(int button_pin, int flex_pin)
+void HumanHand::init(int button_pin, int thumb_pin, int pointer_pin )
 {
     // get IMU ready to roll
     /* Assign a unique ID to the sensors */
@@ -55,11 +55,18 @@ void HumanHand::updateSensors()
      */
 
     // @Jamie change this to make sense for the current glove
-    //int button_status = digitalRead(buttonPin);
+    int button_status = digitalRead(buttonPin);
     int pointer_status = analogRead(pointerPin);
     int thumb_status = analogRead(thumbPin);
-    pointerStatus = pointer_status;
-    thumbStatus = thumb_status;
+    if(button_status == true){
+      pointerStatus = 700;
+      thumbStatus = 700;
+    } else{
+      pointerStatus = pointer_status;
+      thumbStatus = thumb_status;  
+    }
+    
+    
 
     /*
     UPDATE HAND ORIENTATION

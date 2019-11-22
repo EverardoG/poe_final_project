@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include "RobotHand.h"
 
-using FX::Adafruit_FXAS21002C;
-using FX::Adafruit_FXOS8700;
+//using FX::Adafruit_FXAS21002C;
+//using FX::Adafruit_FXOS8700;
 // Adafruit_FXAS21002C gyro = Adafruit_FXAS21002C(0x0021002C);
 Adafruit_9DOF                dof   = Adafruit_9DOF();
 Adafruit_FXOS8700 accelmag = Adafruit_FXOS8700(0x8700A, 0x8700B);
@@ -36,7 +36,7 @@ void RobotHand::init(int left_step_pin, int left_direction_pin, int right_step_p
     PinchServo1.attach(pinchPin1);
     PinchServo2.attach(pinchPin2);
 
-    using FX::ACCEL_RANGE_4G;
+    //using FX::ACCEL_RANGE_4G;
     if (!accelmag.begin(ACCEL_RANGE_4G))
     {
         Serial.println("Ooops, no FXOS8700 detected ... Check your wiring!");
@@ -64,9 +64,11 @@ void RobotHand::setOrientation(int pitch_angle, int roll_angle)
 
 void RobotHand::setClaw(int pointerStatus, int thumbStatus)
 {
-    double p_int = .75, p_factor = 1, t_int = .5, t_factor = 2;
-    double p_fraction = p_int - (double(pointerStatus)/700) * p_actor;
+    double p_int = .6, p_factor = 1.2, t_int = .5, t_factor = 2;
+    
+    double p_fraction = p_int - (double(pointerStatus)/700) * p_factor;
     double t_fraction = t_int - (double(thumbStatus)/700) * t_factor;
+    
     pointerAngle = int(p_fraction * 180);
     thumbAngle = int(p_fraction * 180);
 }
