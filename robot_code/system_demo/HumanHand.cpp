@@ -12,16 +12,19 @@ void HumanHand::init(int button_pin, int flex_pin)
 {
     // get IMU ready to roll
     /* Assign a unique ID to the sensors */
+    //Serial.println("human hand 1");
     Adafruit_9DOF                dof   = Adafruit_9DOF();
     Adafruit_LSM303_Accel_Unified accel = Adafruit_LSM303_Accel_Unified(30301);
     Adafruit_LSM303_Mag_Unified   mag   = Adafruit_LSM303_Mag_Unified(30302);
+    //Serial.println("human hand 2");
 
     // necessary for IMU
     if (!accel.begin())
     {
-        Serial.println(F("Ooops, no LSM303 detected ... Check your wiring!"));
+        Serial.println("Ooops, no LSM303 detected ... Check your wiring!");
         while (1);
     }
+    //Serial.println("human hand 3");
     if (!mag.begin())
     {
         Serial.println("Ooops, no LSM303 detected ... Check your wiring!");
