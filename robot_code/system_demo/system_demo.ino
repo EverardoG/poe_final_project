@@ -4,7 +4,8 @@
 HumanHand humanhand;
 RobotHand robothand;
 
-int fingerStatus;
+int thumbStatus;
+int pointerStatus;
 int calButtonPressed;
 sensors_vec_t handOrientation;
 sensors_vec_t robotOrientation;
@@ -28,7 +29,7 @@ void setup(void)
 {
   Serial.begin(115200);
   Serial.println("start");
-  humanhand.init(4, A2); // button_pin, flex_pin
+  humanhand.init(4, A2, A3); // button_pin, thumb_pin, pointer_pin
   Serial.println("human hand ready");
   robothand.init(9, 8, 3, 2, 10, 11); // left_step_pin, left_direction_pin, right_step_pin, right_direction_pin, pinch_pin_1, pinch_pin_2
   Serial.println("robot hand ready");
@@ -44,7 +45,7 @@ void loop(void)
     humanhand.updateSensors();
     robothand.updateSensors();
 
-    fingerStatus = humanhand.getFingerStatus();
+    pointerStatus, thumbStatus = humanhand.getFingerStatus();
     calButtonPressed = digitalRead(calButtonPin);
 
     handOrientation = humanhand.getHandOrientation();
@@ -138,7 +139,7 @@ void loop(void)
     //Serial.print(pitch_angle); Serial.print(" | "); Serial.println(roll_angle);
 
     robothand.setOrientation(pitch_angle, roll_angle); //pitch, roll
-    robothand.setClaw(fingerStatus);
+    robothand.setClaw(pointerStatus, thumbStatus);
 
     // ACT
     robothand.updateActuators();

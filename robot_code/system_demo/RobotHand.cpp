@@ -62,17 +62,15 @@ void RobotHand::setOrientation(int pitch_angle, int roll_angle)
 
 }
 
-void RobotHand::setClaw(int button_press)
+void RobotHand::setClaw(int pointerStatus, int thumbStatus)
 {
-    // if (button_press == 1) {
-    //     pinchAngle = 50;
-    // }
-    // else {
-    //     pinchAngle = 160;
-    // }
-
-    pinchAngle1 = 0;
-    pinchAngle2 = 0;
+    double p_int = .6, p_factor = 1.2, t_int = .5, t_factor = 2;
+    
+    double p_fraction = p_int - (double(pointerStatus)/700) * p_factor;
+    double t_fraction = t_int - (double(thumbStatus)/700) * t_factor;
+    
+    pointerAngle = int(p_fraction * 180);
+    thumbAngle = int(p_fraction * 180);
 }
 void RobotHand::updateSensors()
 {
@@ -94,8 +92,8 @@ void RobotHand::updateSensors()
 
 void RobotHand::updateActuators()
 {
-    PinchServo1.write(pinchAngle1);
-    PinchServo2.write(pinchAngle2);
+    PinchServo1.write(pointerAngle);
+    PinchServo2.write(thumbAngle);
 
     long startTime = millis();
     long endInterval = 10;
