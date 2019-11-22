@@ -70,7 +70,9 @@ void RobotHand::setClaw(int pointerStatus, int thumbStatus)
     double t_fraction = t_int - (double(thumbStatus)/700) * t_factor;
     
     pointerAngle = int(p_fraction * 180);
-    thumbAngle = int(p_fraction * 180);
+    thumbAngle = int(t_fraction * 180);
+    Serial.print("Thumb "); Serial.println(thumbAngle);
+    Serial.print("Pointer "); Serial.println(pointerAngle);
 }
 void RobotHand::updateSensors()
 {

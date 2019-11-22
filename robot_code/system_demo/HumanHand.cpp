@@ -29,7 +29,10 @@ void HumanHand::init(int button_pin, int thumb_pin, int pointer_pin )
     }
     // set up our button
     buttonPin = button_pin;
-    pinMode(buttonPin, INPUT);
+    thumbPin = thumb_pin;
+    pointerPin = pointer_pin;
+    
+    pinMode(button_pin, INPUT);
 
     // set up Filter
     FilterOnePole rollXLowpassFilter( LOWPASS, roll_filter_frequency);
@@ -38,9 +41,12 @@ void HumanHand::init(int button_pin, int thumb_pin, int pointer_pin )
     FilterOnePole pitchYLowpassFilter( LOWPASS, pitch_filter_frequency);
 }
 
-int HumanHand::getFingerStatus()
+doubs HumanHand::getFingerStatus()
 {
-    return pointerStatus, thumbStatus;
+//    Serial.print("Thumb"); Serial.println(thumbStatus);
+//    Serial.print("Pointer"); Serial.println(pointerStatus);
+    doubs fings = {thumbStatus, pointerStatus};
+    return fings;
 }
 
 sensors_vec_t HumanHand::getHandOrientation()
@@ -55,9 +61,11 @@ void HumanHand::updateSensors()
      */
 
     // @Jamie change this to make sense for the current glove
-    int button_status = digitalRead(buttonPin);
-    int pointer_status = analogRead(pointerPin);
-    int thumb_status = analogRead(thumbPin);
+    button_status = digitalRead(buttonPin);
+    pointer_status = analogRead(pointerPin);
+    thumb_status = analogRead(thumbPin);
+//    Serial.print("Thumb"); Serial.println(thumb_status);
+//    Serial.print("Pointer"); Serial.println(pointer_status);
     if(button_status == true){
       pointerStatus = 700;
       thumbStatus = 700;
