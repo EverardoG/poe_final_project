@@ -27,7 +27,7 @@ void setup(void)
 {
   Serial.begin(115200);
   Serial.println("start");
-  humanhand.init(4, A2, A2); // button_pin, thumb_pin, pointer_pin
+  humanhand.init(4, A2, A3); // button_pin, thumb_pin, pointer_pin
   Serial.println("human hand ready");
   robothand.init(9, 8, 3, 2, 10, 11); // left_step_pin, left_direction_pin, right_step_pin, right_direction_pin, pinch_pin_1, pinch_pin_2
   Serial.println("robot hand ready");
