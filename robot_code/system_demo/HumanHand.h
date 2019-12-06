@@ -19,13 +19,19 @@
 #include "Filters.h"
 #include <math.h>
 
+struct doubs
+{
+  int thumb;
+  int pointer;
+};
+
 class HumanHand
 {
   public:
     HumanHand();
-    void init(int button_pin, int thumbPin, int pointerPin);
+    void init(int button_pin, int thumb_pin, int pointer_pin);
     void updateSensors();
-    int getFingerStatus();
+    doubs getFingerStatus();
     sensors_vec_t getHandOrientation();
 
   private:
@@ -34,6 +40,9 @@ class HumanHand
     int pointerPin;
     int pointerStatus;
     int thumbStatus;
+    int button_status;
+    int pointer_status;
+    int thumb_status;
     sensors_vec_t handOrientation;
 
     sensors_event_t accel_event;
@@ -49,11 +58,11 @@ class HumanHand
     FilterOnePole pitchXLowpassFilter;
     FilterOnePole pitchYLowpassFilter;
 
-    float roll_filter_frequency = 0.5;
-    float pitch_filter_frequency = 100000.0;
+    int roll_filter_frequency = 0.5;
+    int pitch_filter_frequency = 100000.0;
 
-    float lastPitch;
-    float lastRoll;
+    int lastPitch;
+    int lastRoll;
 
     boolean firstRun;
   };
