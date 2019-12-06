@@ -2,7 +2,7 @@
 #include "RobotHand.h"
 
 //using FX::Adafruit_FXAS21002C;
-//using FX::Adafruit_FXOS8700;
+using FX::Adafruit_FXOS8700;
 // Adafruit_FXAS21002C gyro = Adafruit_FXAS21002C(0x0021002C);
 Adafruit_9DOF                dof   = Adafruit_9DOF();
 Adafruit_FXOS8700 accelmag = Adafruit_FXOS8700(0x8700A, 0x8700B);
@@ -36,7 +36,7 @@ void RobotHand::init(int left_step_pin, int left_direction_pin, int right_step_p
     PinchServo1.attach(pinchPin1);
     PinchServo2.attach(pinchPin2);
 
-    //using FX::ACCEL_RANGE_4G;
+    using FX::ACCEL_RANGE_4G;
     if (!accelmag.begin(ACCEL_RANGE_4G))
     {
         Serial.println("Ooops, no FXOS8700 detected ... Check your wiring!");
@@ -52,8 +52,8 @@ void RobotHand::setOrientation(int pitch_angle, int roll_angle)
     pitchAngle = pitch_angle;
     rollAngle = roll_angle;
 
-    int leftStepperPos = (- (float) roll_angle / 2.0 - (float) pitch_angle) * 8.89;
-    int rightStepperPos = (- (float) roll_angle / 2.0 + (float) pitch_angle) * 8.89;
+    int leftStepperPos = (- (int) roll_angle / 2.0 - (int) pitch_angle) * 8.89;
+    int rightStepperPos = (- (int) roll_angle / 2.0 + (int) pitch_angle) * 8.89;
 
     // Serial.print("Left: "); Serial.print(leftStepperPos); Serial.print(" | Right: "); Serial.println(rightStepperPos);
 
@@ -71,8 +71,8 @@ void RobotHand::setClaw(int pointerStatus, int thumbStatus)
     
     pointerAngle = int(p_fraction * 180);
     thumbAngle = int(t_fraction * 180);
-    Serial.print("Thumb "); Serial.println(thumbAngle);
-    Serial.print("Pointer "); Serial.println(pointerAngle);
+//    Serial.print("Thumb "); Serial.println(thumbAngle);
+//    Serial.print("Pointer "); Serial.println(pointerAngle);
 }
 void RobotHand::updateSensors()
 {
@@ -114,12 +114,12 @@ void RobotHand::resetSteppers()
     RightStepper.setCurrentPositionInSteps(0);
 }
 
-float RobotHand::remap(float old_val, float old_min, float old_max, float new_min, float new_max)
+int RobotHand::remap(float old_val, float old_min, float old_max, float new_min, float new_max)
 {
     return (old_val - old_min)/(old_max - old_min)*(new_max - new_min) + new_min;
 }
 
-float RobotHand::remapAngle(float old_angle, float old_min, float old_max, float new_min, float new_max)
+int RobotHand::remapAngle(float old_angle, float old_min, float old_max, float new_min, float new_max)
 {
     // adding an offset if the min is actually greater than the max
     // this handles the case where we cross over the 0,360 point

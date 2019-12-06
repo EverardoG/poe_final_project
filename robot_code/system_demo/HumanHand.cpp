@@ -94,6 +94,12 @@ void HumanHand::updateSensors()
         Serial.println("ERROR: dof.magGetOrientation in HumanHand failed");
     }
 
+//    Serial.print("X: "); Serial.print(accel_event.acceleration.x); Serial.print("  ");
+//    Serial.print("Y: "); Serial.print(accel_event.acceleration.y); Serial.print("  ");
+//    Serial.print("Z: "); Serial.print(accel_event.acceleration.z); Serial.print("  ");Serial.println("m/s^2 ");
+
+    //Serial.print(orientation.pitch); Serial.print(" | "); Serial.println(orientation.roll);
+
 
     // split each angle into x, y componenets, filter on those, then
     // recombine the two values into an angle
@@ -118,7 +124,7 @@ void HumanHand::updateSensors()
     float roll_y_filtered = rollYLowpassFilter.input(roll_y);
 
     orientation.roll = atan2(roll_y_filtered, roll_x_filtered) * 180.0/3.14;
-    // Serial.print("Pitch: "); Serial.print(orientation.pitch); Serial.print(" | Roll: "); Serial.println(orientation.roll);
+    //Serial.print("Pitch: "); Serial.print(orientation.pitch); Serial.print(" | Roll: "); Serial.println(orientation.roll);
 
     handOrientation = orientation;
 }

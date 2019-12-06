@@ -58,11 +58,11 @@ class HumanHand
     FilterOnePole pitchXLowpassFilter;
     FilterOnePole pitchYLowpassFilter;
 
-    float roll_filter_frequency = 0.5;
-    float pitch_filter_frequency = 100000.0;
+    int roll_filter_frequency = 0.5;
+    int pitch_filter_frequency = 100000.0;
 
-    float lastPitch;
-    float lastRoll;
+    int lastPitch;
+    int lastRoll;
 
     boolean firstRun;
   };
