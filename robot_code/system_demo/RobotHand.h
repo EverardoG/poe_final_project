@@ -41,6 +41,8 @@ class RobotHand
     sensors_vec_t getRobotOrientation();
     void resetSteppers();
     int mode = 0;
+    FlexyStepper LeftStepper;
+    FlexyStepper RightStepper;
 
   private:
     sensors_event_t accel_event;
@@ -67,9 +69,6 @@ class RobotHand
 
     Servo PinchServo1;
     Servo PinchServo2;
-
-    FlexyStepper LeftStepper;
-    FlexyStepper RightStepper;
 
     bool isClosed;
 };

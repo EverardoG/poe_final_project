@@ -21,6 +21,7 @@ long prev_time = 0;
 long cur_time = 0;
 long loop_time = 20; // this is how fast our real time loop runs in milliseconds
 
+
 int calButtonPin = 13;
 bool calibration_done = false;
 
@@ -65,12 +66,14 @@ void loop(void)
     robot_hand_within_certain_bounds = true;
 
     // @jasmine - This is basically what puts the robothand in calibration mode
-    if (calButtonPressed == 1){
+    //Serial.println(calButtonPressed);
+    if (calButtonPressed == 1) {
       // robothand.mode == 1 is calibration mode, 0 is mimic the human hand
       robothand.mode = 1;
     }
 
     // if the robohand is in calibration mode, continue calibrating
+
     if (robothand.mode == 1){
         Serial.println("calibrating");
         // @jasmine this is where the actual calibration code should go
@@ -89,7 +92,46 @@ void loop(void)
           // set the robothand back to mimic mode
           robothand.mode = 0;
         }
+
       }
+      Serial.print(robot_pitch_angle);
+      Serial.print(",");
+      Serial.print(new_robot_pitch_angle);
+      Serial.print(",");
+      Serial.print(robotOrientation.pitch);
+      Serial.print(",");
+      if (robotOrientation.pitch > 90)
+      {
+        robot_roll_angle = 180 - robotOrientation.pitch;
+      }
+      else if (robotOrientation.pitch < -90)
+      {
+        robot_roll_angle = -180 - robotOrientation.pitch;
+      }
+      else
+      {
+        robot_roll_angle = robotOrientation.pitch;
+      }
+
+
+      Serial.println(robot_roll_angle);
+      // @jasmine this is where the actual calibration code should go
+      // set the pitch_angle to something based on robotOrientation
+      // set the roll_angle to something based on robotOrientation
+      //pitch_angle = 0;
+      //roll_angle = 0;
+
+      // @jasmine set some end condition here that'll break the robot hand out of calibration mode
+      // it'll probably be something like once the robothand is within bounds of some angles, then stop
+      // this is the if statement that'll break the robot hand out of calibration mode
+      if (robot_hand_within_certain_bounds) {
+        // this resets the robot hand's absolute position
+        robothand.resetSteppers();
+
+        // set the robothand back to mimic mode
+        robothand.mode = 0;
+      }
+    }
     else {
       //Serial.println("mimicing human hand");
       //Serial.print(handOrientation.pitch); Serial.print(" | "); Serial.println(handOrientation.roll);
@@ -101,7 +143,6 @@ void loop(void)
       if (handOrientation.roll >= 0) { roll_angle = robothand.remap(handOrientation.roll, 180.0, 0.0, 0.0, 180.0); }
       else { roll_angle = robothand.remap(handOrientation.roll, -180.0, 0.0, 0.0, -180.0); }
       Serial.print(pitch_angle); Serial.print(" | "); Serial.println(roll_angle);
-
     }
 
     //Serial.print(pitch_angle); Serial.print(" | "); Serial.println(roll_angle);

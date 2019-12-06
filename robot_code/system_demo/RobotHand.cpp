@@ -55,7 +55,7 @@ void RobotHand::setOrientation(int pitch_angle, int roll_angle)
     int leftStepperPos = (- (int) roll_angle / 2.0 - (int) pitch_angle) * 8.89;
     int rightStepperPos = (- (int) roll_angle / 2.0 + (int) pitch_angle) * 8.89;
 
-    // Serial.print("Left: "); Serial.print(leftStepperPos); Serial.print(" | Right: "); Serial.println(rightStepperPos);
+    Serial.print("Left: "); Serial.print(leftStepperPos); Serial.print(" | Right: "); Serial.println(rightStepperPos);
 
     LeftStepper.setTargetPositionInSteps(leftStepperPos);
     RightStepper.setTargetPositionInSteps(rightStepperPos);
