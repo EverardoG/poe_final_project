@@ -12,7 +12,7 @@ RobotHand::RobotHand()
 {
 }
 
-void RobotHand::init(int left_step_pin, int left_direction_pin, int right_step_pin, int right_direction_pin, int pinch_pin_1, int pinch_pin_2)
+void RobotHand::init(int left_step_pin, int left_direction_pin, int right_step_pin, int right_direction_pin, int pinch_pin_1, int pinch_pin_2, int pinch_pin_3)
 {
     leftStepPin = left_step_pin;
     leftDirectionPin = left_direction_pin;
@@ -21,6 +21,7 @@ void RobotHand::init(int left_step_pin, int left_direction_pin, int right_step_p
 
     pinchPin1 = pinch_pin_1;
     pinchPin2 = pinch_pin_2;
+    pinchPin3 = pinch_pin_3;
 
     LeftStepper.connectToPins(leftStepPin, leftDirectionPin);
     RightStepper.connectToPins(rightStepPin, rightDirectionPin);
@@ -35,6 +36,7 @@ void RobotHand::init(int left_step_pin, int left_direction_pin, int right_step_p
 
     PinchServo1.attach(pinchPin1);
     PinchServo2.attach(pinchPin2);
+    PinchServo3.attach(pinchPin3);
 
     using FX::ACCEL_RANGE_4G;
     if (!accelmag.begin(ACCEL_RANGE_4G))
@@ -62,15 +64,17 @@ void RobotHand::setOrientation(int pitch_angle, int roll_angle)
 
 }
 
-void RobotHand::setClaw(int pointerStatus, int thumbStatus)
+void RobotHand::setClaw(int pointerStatus, int thumbStatus, int middleStatus)
 {
-    double p_int = .6, p_factor = 1.2, t_int = .5, t_factor = 2;
+    double p_int = .6, p_factor = 1.2, m_int =.6, m_factor = 1.2, t_int = .5, t_factor = 2;
     
     double p_fraction = p_int - (double(pointerStatus)/700) * p_factor;
+    double m_fraction = m_int - (double(middleStatus)/700) * p_factor;
     double t_fraction = t_int - (double(thumbStatus)/700) * t_factor;
     
     pointerAngle = int(p_fraction * 180);
     thumbAngle = int(t_fraction * 180);
+    middleAngle = int(t_fraction * 180);
 //    Serial.print("Thumb "); Serial.println(thumbAngle);
 //    Serial.print("Pointer "); Serial.println(pointerAngle);
 }
@@ -96,6 +100,7 @@ void RobotHand::updateActuators()
 {
     PinchServo1.write(pointerAngle);
     PinchServo2.write(thumbAngle);
+    PinchServo3.write(middleAngle);
 
     long startTime = millis();
     long endInterval = 10;
