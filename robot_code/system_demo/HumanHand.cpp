@@ -34,6 +34,7 @@ void HumanHand::init(int button_pin, int thumb_pin, int pointer_pin )
     buttonPin = button_pin;
     thumbPin = thumb_pin;
     pointerPin = pointer_pin;
+    middlePin = middle_pin;
     
     pinMode(button_pin, INPUT);
 
@@ -48,7 +49,7 @@ doubs HumanHand::getFingerStatus()
 {
 //    Serial.print("Thumb"); Serial.println(thumbStatus);
 //    Serial.print("Pointer"); Serial.println(pointerStatus);
-    doubs fings = {thumbStatus, pointerStatus};
+    trips fings = {thumbStatus, pointerStatus, middleStatus};
     return fings;
 }
 
@@ -67,14 +68,17 @@ void HumanHand::updateSensors()
     button_status = digitalRead(buttonPin);
     pointer_status = analogRead(pointerPin);
     thumb_status = analogRead(thumbPin);
+    middle_status = analogRead(middlePin);
 //    Serial.print("Thumb"); Serial.println(thumb_status);
 //    Serial.print("Pointer"); Serial.println(pointer_status);
     if(button_status == true){
       pointerStatus = 700;
       thumbStatus = 700;
+      middleStatus = 700;
     } else{
       pointerStatus = pointer_status;
-      thumbStatus = thumb_status;  
+      thumbStatus = thumb_status;
+      middleStatus = middle_status;  
     }
     
     

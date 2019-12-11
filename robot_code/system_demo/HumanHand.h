@@ -19,10 +19,11 @@
 #include "Filters.h"
 #include <math.h>
 
-struct doubs
+struct trips
 {
   int thumb;
   int pointer;
+  int middle;
 };
 
 class HumanHand
@@ -38,11 +39,14 @@ class HumanHand
     int buttonPin;
     int thumbPin;
     int pointerPin;
+    int middlePin;
     int pointerStatus;
     int thumbStatus;
+    int middleStatus;
     int button_status;
     int pointer_status;
     int thumb_status;
+    int middle_status;
     sensors_vec_t handOrientation;
 
     sensors_event_t accel_event;
