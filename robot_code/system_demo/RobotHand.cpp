@@ -57,7 +57,7 @@ void RobotHand::setOrientation(int pitch_angle, int roll_angle)
     int leftStepperPos = (- (int) roll_angle / 2.0 - (int) pitch_angle) * 8.89;
     int rightStepperPos = (- (int) roll_angle / 2.0 + (int) pitch_angle) * 8.89;
 
-    Serial.print("Left: "); Serial.print(leftStepperPos); Serial.print(" | Right: "); Serial.println(rightStepperPos);
+    // Serial.print("Left: "); Serial.print(leftStepperPos); Serial.print(" | Right: "); Serial.println(rightStepperPos);
 
     LeftStepper.setTargetPositionInSteps(leftStepperPos);
     RightStepper.setTargetPositionInSteps(rightStepperPos);
@@ -66,15 +66,16 @@ void RobotHand::setOrientation(int pitch_angle, int roll_angle)
 
 void RobotHand::setClaw(int pointerStatus, int thumbStatus, int middleStatus)
 {
-    double p_int = .6, p_factor = 1.2, m_int =.6, m_factor = 1.2, t_int = .5, t_factor = 2;
-    
-    double p_fraction = p_int - (double(pointerStatus)/700) * p_factor;
-    double m_fraction = m_int - (double(middleStatus)/700) * p_factor;
-    double t_fraction = t_int - (double(thumbStatus)/700) * t_factor;
-    
+    double p_int = 1, p_factor = 2, m_int =1, m_factor = 1.2, t_int = 1, t_factor = 2.5;
+
+    // double p_fraction = p_int - ((double(pointerStatus)/700) * p_factor);
+    double p_fraction = -(p_int - ((double(pointerStatus)/700) * p_factor));
+    double m_fraction = m_int - ((double(middleStatus)/950) * m_factor);
+    double t_fraction = t_int - ((double(thumbStatus)/700) * t_factor);
+
     pointerAngle = int(p_fraction * 180);
     thumbAngle = int(t_fraction * 180);
-    middleAngle = int(t_fraction * 180);
+    middleAngle = int(m_fraction * 180);
 //    Serial.print("Thumb "); Serial.println(thumbAngle);
 //    Serial.print("Pointer "); Serial.println(pointerAngle);
 }
@@ -98,9 +99,40 @@ void RobotHand::updateSensors()
 
 void RobotHand::updateActuators()
 {
+
+    if (pointerAngle < 0) {
+        pointerAngle = 0;
+    }
+    else if (pointerAngle > 180) {
+        pointerAngle = 180;
+    }
+
+    if (thumbAngle < 0) {
+        thumbAngle = 0;
+    }
+    else if (thumbAngle > 180) {
+        thumbAngle = 180;
+    }
+
+    if (middleAngle < 0) {
+        middleAngle = 0;
+    }
+    else if (middleAngle > 180) {
+        middleAngle = 180;
+    }
+
+
+
     PinchServo1.write(pointerAngle);
+    delay(20);
     PinchServo2.write(thumbAngle);
+    delay(20);
     PinchServo3.write(middleAngle);
+    delay(20);
+
+    Serial.print("pointer: ");Serial.print(pointerAngle);
+    Serial.print(" | middle: ");Serial.print(middleAngle);
+    Serial.print(" | thumb: ");Serial.println(thumbAngle);
 
     long startTime = millis();
     long endInterval = 10;
