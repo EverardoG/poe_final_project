@@ -80,8 +80,11 @@ void HumanHand::updateSensors()
       thumbStatus = thumb_status;
       middleStatus = middle_status;
     }
+    // Serial.print("pointer: ");Serial.print(pointerStatus);
+    // Serial.print(" | middle: ");Serial.print(middleStatus);
+    // Serial.print(" | thumb: ");Serial.println(thumbStatus);
 
-
+    // A1, A3, A2); thumb_pin, pointer_pin, middle_pin
 
     /*
     UPDATE HAND ORIENTATION
