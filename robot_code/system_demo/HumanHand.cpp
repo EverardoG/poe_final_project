@@ -8,7 +8,7 @@ HumanHand::HumanHand()
 {
 }
 
-void HumanHand::init(int button_pin, int thumb_pin, int pointer_pin )
+void HumanHand::init(int button_pin, int thumb_pin, int pointer_pin , int middle_pin)
 {
     // get IMU ready to roll
     /* Assign a unique ID to the sensors */
@@ -35,7 +35,7 @@ void HumanHand::init(int button_pin, int thumb_pin, int pointer_pin )
     thumbPin = thumb_pin;
     pointerPin = pointer_pin;
     middlePin = middle_pin;
-    
+
     pinMode(button_pin, INPUT);
 
     // set up Filter
@@ -45,7 +45,7 @@ void HumanHand::init(int button_pin, int thumb_pin, int pointer_pin )
     FilterOnePole pitchYLowpassFilter( LOWPASS, pitch_filter_frequency);
 }
 
-doubs HumanHand::getFingerStatus()
+trips HumanHand::getFingerStatus()
 {
 //    Serial.print("Thumb"); Serial.println(thumbStatus);
 //    Serial.print("Pointer"); Serial.println(pointerStatus);
@@ -78,10 +78,10 @@ void HumanHand::updateSensors()
     } else{
       pointerStatus = pointer_status;
       thumbStatus = thumb_status;
-      middleStatus = middle_status;  
+      middleStatus = middle_status;
     }
-    
-    
+
+
 
     /*
     UPDATE HAND ORIENTATION
