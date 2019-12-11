@@ -30,9 +30,9 @@ class HumanHand
 {
   public:
     HumanHand();
-    void init(int button_pin, int thumb_pin, int pointer_pin);
+    void init(int button_pin, int thumb_pin, int pointer_pin, int middle_pin);
     void updateSensors();
-    doubs getFingerStatus();
+    trips getFingerStatus();
     sensors_vec_t getHandOrientation();
 
   private:
